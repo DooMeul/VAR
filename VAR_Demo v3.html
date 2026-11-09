@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#060818">
+<title>VAR | 8초가 증명하는 사고의 진실</title>
+<!--
+발표용 시연 순서
+1. 히어로 → [사고 복원 시연 시작] 클릭 (또는 '자동 시연' 버튼으로 4단계 자동 진행)
+2. ① 엣지 AI 트리거: 충격 감지 → 사고 전후 8초 격리
+3. ② 블록체인 봉인: 8개 블록 해시 체인 → [위·변조 시도]로 조작 감지 시연
+4. ③ 디지털 트윈: 타임라인을 움직이며 진로변경·제동·충돌 재현, 센서 그래프 동기화
+5. ④ 과실 연산: 회피 가능성 계산 → 과실비율 → 3중 열람키로 리포트 열기
+※ 시나리오와 과실 계산은 실제 과실비율 인정기준을 단순화한 시연용 모델입니다.
+-->
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+ --blue:#0515d8;--blue-deep:#010a7b;--blue-hover:#010c94;--blue-soft:#eef0ff;
+ --ink:#373847;--black:#101010;--white:#fff;
+ --bg:#f9f9fb;--bg2:#f8faff;--gray1:#f6f6f6;--gray2:#828282;--neutral:#a4a4a4;
+ --line:#dddddd;--line2:#cbd2d9;
+ --orange:#ff7a1a;--good:#1f9d7a;--goodbg:#e8f6f1;--caution:#e0912a;--cautionbg:#fdf3e4;--check:#d9475a;--checkbg:#fdecee;
+ --twin:#0b1024;--twin2:#141a33;
+ --r-sm:6.5px;--r-md:13px;--r-lg:19.5px;--r-xl:26px;--r-pill:120px;
+ --shadow:0 0 30px rgba(203,203,218,.5);--ring:0 0 0 1px #dddddd;
+ --ease:cubic-bezier(.45,0,.55,1);
+ --font:"Pretendard",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;--font-en:"Poppins","Pretendard",sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;letter-spacing:-.2px;-webkit-font-smoothing:antialiased;word-break:keep-all}
+button,input{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none}a{color:inherit;text-decoration:none}
+.wrap{width:min(1440px,calc(100% - 80px));margin:auto}
+.en{font-family:var(--font-en)}.mono{font-family:var(--mono)}
+
+/* header */
+.topbar{height:84px;position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s var(--ease),border-color .3s,color .3s;border-bottom:1px solid rgba(255,255,255,.14);color:#fff}
+.topbar.solid{background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-color:var(--line);color:var(--ink)}
+.nav{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-en);font-weight:700;font-size:22px;letter-spacing:-.5px}
+.brandmark{min-width:34px;height:34px;padding:0 7px;border-radius:9px;background:var(--blue);display:grid;place-items:center;color:#fff;font-size:12px;font-weight:700;letter-spacing:.3px}
+.navlinks{display:flex;gap:46px;font-weight:600;font-size:17px}
+.navlinks a{position:relative;padding:30px 0}
+.navlinks a:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:currentColor;transform:scaleX(0);transition:transform .3s var(--ease)}
+.navlinks a:hover:after{transform:scaleX(1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12.6px 25.2px;border-radius:var(--r-sm);font-weight:600;font-size:15px;transition:background .3s var(--ease),transform .3s var(--ease),border-color .3s,color .3s;white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.primary{background:var(--blue);color:#fff}.primary:hover{background:var(--blue-hover)}
+.dark{background:var(--black);color:#fff}
+.ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}.ghost:hover{border-color:var(--black)}
+.pill{border-radius:var(--r-pill);border:1px solid currentColor;padding:9px 18px;font-size:14px;opacity:.9}
+.small{padding:8px 14px;font-size:13px}
+.label{font-family:var(--font-en);font-size:14px;font-weight:600;color:var(--blue);letter-spacing:.4px;text-transform:uppercase}
+.h2{font-size:clamp(30px,3.4vw,50px);line-height:1.25;letter-spacing:-2px;font-weight:700;margin:12px 0 0;color:var(--black)}
+.lead{font-size:18px;color:var(--gray2);margin:14px 0 0;max-width:760px}
+.section{padding:130px 0}.section.alt{background:var(--bg2)}
+.section-head{margin-bottom:54px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+
+/* hero */
+.hero{position:relative;min-height:100vh;background:var(--twin);color:#fff;overflow:hidden;display:flex;align-items:center;padding:140px 0 110px}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(120,140,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(120,140,255,.08) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 75%)}
+.hero:before{content:"";position:absolute;width:900px;height:900px;right:-200px;top:-260px;border-radius:50%;background:radial-gradient(circle,rgba(5,21,216,.75),transparent 68%)}
+.hero-inner{position:relative;z-index:1;display:grid;grid-template-columns:.95fr 1.05fr;gap:50px;align-items:center}
+.hero .label{color:#9aa4ff}
+.hero h1{font-size:clamp(40px,4.2vw,64px);line-height:1.15;letter-spacing:-3px;margin:20px 0 0}
+.hero h1 em{font-style:normal;color:#8f99ff}
+.hero p{font-size:19px;color:rgba(255,255,255,.7);margin:24px 0 36px;max-width:600px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.hero-kpis{display:flex;gap:34px;margin-top:46px;flex-wrap:wrap}
+.hero-kpis div{border-left:1px solid rgba(255,255,255,.2);padding-left:16px}
+.hero-kpis b{display:block;font-family:var(--font-en);font-size:30px;font-weight:600;letter-spacing:-1px}
+.hero-kpis span{font-size:13px;color:rgba(255,255,255,.55)}
+.hero-term{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:var(--r-xl);padding:26px;font-family:var(--mono);font-size:13px;line-height:1.85;color:#c9cffc;backdrop-filter:blur(6px)}
+.hero-term .k{color:#7c86ff}.hero-term .ok{color:#5ee0b0}.hero-term .w{color:#ffb36b}
+.hero-term .bar{height:4px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin:12px 0 4px}
+.hero-term .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4553ff,#8f99ff);animation:fill 3.2s var(--ease) infinite}
+@keyframes fill{0%{width:0}70%,100%{width:100%}}
+.dashcam{margin:0;position:relative;border-radius:var(--r-xl);overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 8px rgba(255,255,255,.03)}
+.dashcam canvas{display:block;width:100%;aspect-ratio:16/10}
+.dashcam figcaption{display:flex;justify-content:space-between;gap:12px;padding:12px 18px;font-size:13px;color:rgba(255,255,255,.65);background:rgba(255,255,255,.04);border-top:1px solid rgba(255,255,255,.08)}
+.dot-rec{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3b4d;margin-right:8px;vertical-align:1px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+.scroll{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:1;font-family:var(--font-en);font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.55);display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll i{width:1px;height:44px;background:linear-gradient(rgba(255,255,255,.7),transparent)}
+
+/* problem */
+.prob-grid{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+.prob{padding:38px 34px 34px 0;border-bottom:1px solid var(--line)}
+.prob+.prob{padding-left:34px;border-left:1px solid var(--line)}
+.prob .n{font-family:var(--font-en);font-weight:600;color:var(--blue);font-size:14px}
+.prob h3{font-size:26px;letter-spacing:-1px;margin:18px 0 10px;color:var(--black)}
+.prob p{margin:0;color:var(--gray2);font-size:16px}
+
+/* demo console */
+.demo{background:var(--black);color:#fff;padding:120px 0}
+.demo .h2{color:#fff}.demo .lead{color:rgba(255,255,255,.6)}.demo .label{color:#9aa4ff}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.step{text-align:left;padding:18px 20px;border-radius:var(--r-lg);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);transition:.3s var(--ease);color:rgba(255,255,255,.6)}
+.step:hover{border-color:rgba(255,255,255,.3)}
+.step .no{font-family:var(--font-en);font-size:12px;font-weight:600;letter-spacing:.5px}
+.step b{display:block;font-size:17px;margin-top:4px;color:#fff}
+.step small{font-size:12px}
+.step.active{background:var(--blue);border-color:var(--blue);color:rgba(255,255,255,.8)}
+.step.done .no:after{content:" ✓";color:#5ee0b0}
+.console{display:grid;grid-template-columns:1.25fr .9fr;gap:16px}
+.twin{background:var(--twin);border:1px solid rgba(255,255,255,.1);border-radius:var(--r-xl);overflow:hidden;display:flex;flex-direction:column}
+.twin-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);gap:12px;flex-wrap:wrap}
+.twin-head .tt{font-weight:700;font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:65px;font-size:12px;font-weight:700;background:rgba(255,255,255,.08);color:#c9cffc}
+.chip.live:before{content:"";width:7px;height:7px;border-radius:50%;background:#ff4d5e;box-shadow:0 0 0 3px rgba(255,77,94,.25)}
+.chip.sealed{background:rgba(94,224,176,.12);color:#5ee0b0}
+.canvas-wrap{position:relative;height:360px}
+#scene{display:block;width:100%;height:100%}
+.hud{position:absolute;left:14px;top:12px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+.hud div{background:rgba(11,16,36,.82);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:7px 11px;font-size:12px;color:#aab2e8}
+.hud b{display:block;font-family:var(--mono);font-size:16px;color:#fff;font-weight:600}
+.event-toast{position:absolute;right:14px;top:12px;background:#fff;color:var(--black);font-weight:700;font-size:13px;padding:8px 14px;border-radius:var(--r-pill);opacity:0;transform:translateY(-6px);transition:.25s var(--ease);pointer-events:none}
+.event-toast.show{opacity:1;transform:none}
+.timeline{padding:16px 20px 18px;border-top:1px solid rgba(255,255,255,.08)}
+.tl-row{display:flex;align-items:center;gap:12px}
+.playbtn{width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;flex:none;font-size:15px}
+.tl-track{position:relative;flex:1;height:42px}
+.tl-track input{position:absolute;inset:0;width:100%;margin:0;opacity:0;cursor:pointer;z-index:3}
+.tl-bar{position:absolute;left:0;right:0;top:19px;height:4px;border-radius:4px;background:rgba(255,255,255,.12)}
+.tl-fill{position:absolute;left:0;top:19px;height:4px;border-radius:4px;background:#8f99ff}
+.tl-knob{position:absolute;top:12px;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(143,153,255,.35);pointer-events:none}
+.tl-mark{position:absolute;top:8px;width:2px;height:26px;margin-left:-1px;background:rgba(255,255,255,.35)}
+.tl-mark.impact{background:#ff4d5e;width:3px}
+.tl-labels{position:relative;height:34px;margin-left:54px;font-size:11px;color:rgba(255,255,255,.5)}
+.tl-labels span{position:absolute;transform:translateX(-50%);white-space:nowrap;top:2px}
+.tl-labels span.alt{top:17px}
+.tl-labels span.impact{color:#ff8a95;font-weight:700}
+.speedsel{display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:var(--r-pill);padding:3px;flex:none}
+.speedsel button{padding:5px 10px;border-radius:var(--r-pill);font-size:12px;font-weight:700;color:rgba(255,255,255,.6)}
+.speedsel button.on{background:#fff;color:var(--black)}
+.tl-time{font-family:var(--mono);font-size:15px;min-width:88px;text-align:right;color:#fff}
+
+.side{background:#fff;color:var(--ink);border-radius:var(--r-xl);padding:26px;min-height:520px;display:flex;flex-direction:column}
+.side h3{font-size:22px;letter-spacing:-.8px;margin:6px 0 4px;color:var(--black)}
+.side .desc{color:var(--gray2);font-size:14px;margin:0 0 16px}
+.pane{display:none;flex:1;flex-direction:column}.pane.active{display:flex}
+.mini{border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;margin-bottom:10px}
+.mini-top{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--ink)}
+.mini-top span:last-child{font-family:var(--mono);color:var(--blue)}
+.mini canvas{display:block;width:100%;height:62px;margin-top:6px}
+.buffer{display:flex;gap:2px;height:30px;margin:6px 0 4px}
+.buffer i{flex:1;border-radius:3px;background:var(--gray1);transition:background .3s}
+.buffer i.iso{background:var(--blue)}
+.buffer i.impact{background:var(--check)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.kv div{background:var(--bg2);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--gray2)}
+.kv b{display:block;font-family:var(--mono);font-size:15px;color:var(--black)}
+.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.block{border:1px solid var(--line);border-radius:12px;padding:10px;font-size:11px;position:relative;transition:.3s var(--ease);background:#fff}
+.block .bt{font-weight:700;font-size:12px;color:var(--black);display:flex;justify-content:space-between}
+.block .h{font-family:var(--mono);color:var(--gray2);font-size:10.5px;word-break:break-all;margin-top:4px;line-height:1.4}
+.block.sealed{border-color:#9fd9c5;background:#f5fcf9}
+.block.bad{border-color:var(--check);background:var(--checkbg)}
+.block.bad .h{color:var(--check)}
+.block.pending{opacity:.35}
+.verify{margin-top:12px;border-radius:var(--r-md);padding:12px 14px;font-size:13px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.verify.ok{background:var(--goodbg);color:#14745a}.verify.bad{background:var(--checkbg);color:#b3303f}.verify.wait{background:var(--gray1);color:var(--gray2)}
+.offchain{display:flex;justify-content:space-between;align-items:center;gap:10px;border:1px dashed var(--line2);border-radius:var(--r-md);padding:10px 14px;margin-top:10px;font-size:12px}
+.offchain .mono{color:var(--gray2);font-size:11px}
+.calc{background:var(--bg2);border-radius:var(--r-md);padding:14px 16px;font-size:13px;margin-bottom:10px}
+.calc .f{font-family:var(--mono);font-size:13px;color:var(--black);margin:6px 0}
+.gauge{position:relative;height:14px;border-radius:14px;background:var(--gray1);margin:10px 0 6px;overflow:hidden}
+.gauge i{position:absolute;left:0;top:0;bottom:0;background:var(--check);border-radius:14px;transition:width .8s var(--ease)}
+.gauge u{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--black)}
+.gauge-legend{display:flex;justify-content:space-between;font-size:11px;color:var(--gray2)}
+.verdict{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--r-md);font-weight:700;font-size:14px;margin-bottom:10px}
+.verdict.no{background:var(--checkbg);color:#b3303f}
+.ratio{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.ratio div{border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px}
+.ratio small{display:block;font-size:11px;color:var(--gray2);font-weight:700}
+.ratio b{font-family:var(--font-en);font-size:24px;letter-spacing:-1px;color:var(--black)}
+.ratio .new{border-color:var(--blue);background:var(--blue-soft)}.ratio .new b{color:var(--blue)}
+.ratio .old b{color:var(--neutral);text-decoration:line-through;text-decoration-thickness:2px}
+.mods{list-style:none;margin:0 0 10px;padding:0;display:grid;gap:6px}
+.mods li{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:8px 12px;background:var(--gray1);border-radius:10px}
+.mods li b{font-family:var(--mono);white-space:nowrap}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:auto}
+.key{border:1px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center;font-size:12px;font-weight:700;color:var(--gray2);transition:.25s var(--ease)}
+.key .ic{font-size:18px;display:block}
+.key.on{border-color:var(--blue);background:var(--blue);color:#fff}
+.side-foot{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.side-foot .btn{flex:1}
+.report{position:relative;margin-top:10px;border:1px solid var(--line);border-radius:var(--r-md);padding:14px;font-size:12.5px}
+.report.locked .report-body{filter:blur(5px);user-select:none}
+.report .lock{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;font-size:13px;color:var(--black)}
+.report:not(.locked) .lock{display:none}
+.report-body p{margin:4px 0}
+
+/* process compare */
+.flow{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.flow-card{border-radius:var(--r-xl);padding:36px;box-shadow:var(--ring);background:#fff}
+.flow-card.new{background:var(--blue);color:#fff;box-shadow:none}
+.flow-card h3{font-size:24px;letter-spacing:-1px;margin:8px 0 22px}
+.flow-card .label{color:var(--gray2)}.flow-card.new .label{color:#c9cffc}
+.flow-list{list-style:none;padding:0;margin:0;display:grid;gap:0}
+.flow-list li{display:grid;grid-template-columns:88px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line)}
+.flow-card.new .flow-list li{border-color:rgba(255,255,255,.2)}
+.flow-list .t{font-family:var(--font-en);font-weight:600;font-size:15px}
+.flow-list p{margin:2px 0 0;font-size:14px;opacity:.75}
+.flow-total{margin-top:20px;font-family:var(--font-en);font-size:42px;font-weight:700;letter-spacing:-1.5px}
+.flow-total small{font-family:var(--font);font-size:15px;font-weight:600;opacity:.7;margin-left:6px;letter-spacing:0}
+
+/* options */
+.opt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.opt{background:#fff;border-radius:var(--r-xl);padding:36px 32px;box-shadow:var(--ring);transition:transform .45s var(--ease),box-shadow .45s,background .45s,color .45s}
+.opt:hover{transform:translateY(-8px);box-shadow:var(--shadow);background:var(--blue);color:#fff}
+.opt .en{font-weight:600;font-size:14px;color:var(--blue);transition:color .45s}
+.opt:hover .en,.opt:hover p,.opt:hover li{color:rgba(255,255,255,.8)}
+.opt h3{font-size:24px;letter-spacing:-1px;margin:12px 0 10px}
+.opt p{color:var(--gray2);font-size:15px;margin:0 0 16px;transition:color .45s}
+.opt ul{margin:0;padding-left:18px;color:var(--ink);font-size:14px;transition:color .45s}
+.opt .price{font-family:var(--font-en);font-size:30px;font-weight:700;letter-spacing:-1px;margin-top:22px}
+
+/* trust */
+.trust{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.node-map{background:var(--twin);border-radius:var(--r-xl);padding:30px;color:#fff;position:relative;min-height:380px}
+.node-map svg{width:100%;height:100%;display:block}
+.trust-list{display:grid;gap:14px}
+.trust-item{border-radius:var(--r-xl);padding:28px 30px;box-shadow:var(--ring);background:#fff}
+.trust-item h3{margin:6px 0 6px;font-size:21px;letter-spacing:-.8px;color:var(--black)}
+.trust-item p{margin:0;color:var(--gray2);font-size:15px}
+
+/* effects */
+.eff{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.eff div{border-top:2px solid var(--black);padding-top:22px}
+.eff .en{font-weight:600;color:var(--blue);font-size:14px}
+.eff h3{font-size:24px;letter-spacing:-1px;margin:10px 0 8px;color:var(--black)}
+.eff p{margin:0;color:var(--gray2)}
+.cta{background:var(--black);color:#fff;border-radius:var(--r-xl);padding:64px;display:flex;justify-content:space-between;align-items:center;gap:30px;position:relative;overflow:hidden;margin-top:90px}
+.cta:after{content:"";position:absolute;right:-120px;top:-160px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(5,21,216,.7),transparent 70%)}
+.cta>*{position:relative;z-index:1}
+.cta h2{font-size:clamp(26px,2.8vw,40px);letter-spacing:-1.5px;margin:10px 0 0;line-height:1.3}
+.cta .label{color:#9aa4ff}
+.footer{background:var(--black);color:var(--neutral);padding:60px 0 54px;font-size:13px;line-height:1.9}
+.footer .brand{color:#fff;margin-bottom:18px}
+.disclaimer{font-size:12px;color:var(--gray2);margin-top:14px}
+.demo .disclaimer{color:rgba(255,255,255,.45)}
+
+@media(max-width:1240px){.console{grid-template-columns:1fr}.side{min-height:0}.navlinks{gap:28px;font-size:15px}}
+@media(max-width:1024px){.hero-inner{grid-template-columns:1fr}.dashcam figcaption span:last-child{display:none}.prob-grid,.opt-grid,.eff{grid-template-columns:1fr}.prob,.prob+.prob{padding:30px 0;border-left:0}.flow,.trust{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.cta{flex-direction:column;align-items:flex-start;padding:44px 34px}}
+@media(max-width:768px){.wrap{width:calc(100% - 36px)}.topbar{height:66px}.navlinks{display:none}.section,.demo{padding:84px 0}.section-head{flex-direction:column;align-items:flex-start}.canvas-wrap{height:280px}.chain{grid-template-columns:repeat(2,1fr)}.hud div:nth-child(n+3){display:none}.tl-labels{display:none}.speedsel{display:none}.hero{min-height:auto;padding:120px 0 100px}.flow-card{padding:26px}}
+@media(prefers-reduced-motion:reduce){.hero-term .bar i{animation:none;width:100%}}
+</style>
+<style id="flash">
+:root{--g1:#5b6cff;--g2:#a35bff;--g3:#ff7a1a;--glass:rgba(255,255,255,.045);--gline:rgba(255,255,255,.1)}
+body{background:#060818;color:#c9cffc}
+.label{color:#9aa4ff;background:linear-gradient(90deg,#8f99ff,#c58bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.h2{background:linear-gradient(100deg,#fff 0%,#c3c9ff 55%,#ffb27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:4px}
+.lead{color:rgba(255,255,255,.6)}
+.topbar.solid{background:rgba(6,8,24,.72);border-color:rgba(255,255,255,.08);color:#fff;backdrop-filter:blur(18px) saturate(1.4)}
+.brandmark{background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:0 0 18px rgba(120,110,255,.6)}
+.primary{background:linear-gradient(110deg,var(--g1),var(--g2) 60%,var(--g1));background-size:200% 100%;box-shadow:0 8px 30px -6px rgba(110,90,255,.7),inset 0 1px 0 rgba(255,255,255,.25);position:relative;overflow:hidden;animation:shift 5s linear infinite}
+.primary:hover{background:linear-gradient(110deg,var(--g1),var(--g2) 60%,var(--g1));background-size:200% 100%;box-shadow:0 12px 40px -6px rgba(140,100,255,.9)}
+.primary:after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-120%);animation:shine 3.2s var(--ease) infinite}
+@keyframes shine{60%,100%{transform:translateX(120%)}}
+@keyframes shift{to{background-position:-200% 0}}
+/* hero */
+.hero{background:#04061a}
+.hero:before{animation:float1 14s ease-in-out infinite alternate;background:radial-gradient(circle,rgba(70,80,255,.75),transparent 66%)}
+.hero:after{content:"";position:absolute;width:760px;height:760px;left:-260px;bottom:-320px;border-radius:50%;background:radial-gradient(circle,rgba(163,91,255,.45),transparent 65%);animation:float2 16s ease-in-out infinite alternate;pointer-events:none}
+.aurora{position:absolute;width:520px;height:520px;left:38%;top:12%;border-radius:50%;background:radial-gradient(circle,rgba(255,122,26,.22),transparent 65%);filter:blur(10px);animation:float1 18s ease-in-out infinite alternate-reverse;pointer-events:none}
+@keyframes float1{to{transform:translate(-120px,90px) scale(1.15)}}
+@keyframes float2{to{transform:translate(140px,-80px) scale(1.1)}}
+.hero-grid{animation:gridmove 20s linear infinite}
+@keyframes gridmove{to{background-position:0 56px,56px 0}}
+.hero h1 em{background:linear-gradient(90deg,#8f99ff,#d08cff,#ff9a5a,#8f99ff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shift 6s linear infinite;filter:drop-shadow(0 0 24px rgba(160,120,255,.45))}
+.hero-kpis div{border-left:0;padding:14px 18px;background:var(--glass);border:1px solid var(--gline);border-radius:14px;backdrop-filter:blur(8px)}
+.hero-kpis b{background:linear-gradient(180deg,#fff,#a9b1ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dashcam{box-shadow:0 30px 90px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08),0 0 80px -10px rgba(110,90,255,.55)}
+.dash-wrap{position:relative;border-radius:calc(var(--r-xl) + 2px);padding:2px;background:conic-gradient(from var(--a,0deg),#5b6cff,#a35bff,#ff7a1a,#5b6cff);animation:spin 6s linear infinite}
+@property --a{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes spin{to{--a:360deg}}
+/* marquee */
+.ticker{border-block:1px solid var(--gline);background:linear-gradient(90deg,rgba(91,108,255,.12),rgba(163,91,255,.12),rgba(255,122,26,.1));overflow:hidden;padding:18px 0}
+.ticker-track{display:flex;gap:48px;width:max-content;animation:marq 32s linear infinite;font-family:var(--font-en);font-weight:600;font-size:15px;letter-spacing:2px;color:rgba(255,255,255,.75);white-space:nowrap}
+.ticker-track span{display:flex;gap:48px;align-items:center}
+.ticker-track i{width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g3));box-shadow:0 0 10px var(--g2)}
+@keyframes marq{to{transform:translateX(-50%)}}
+/* sections */
+.section{background:transparent;position:relative}
+.section.alt{background:radial-gradient(ellipse 60% 50% at 85% 0%,rgba(91,108,255,.14),transparent),radial-gradient(ellipse 50% 50% at 0% 100%,rgba(163,91,255,.12),transparent),#080b20}
+.prob-grid{border-top:1px solid rgba(255,255,255,.2);gap:16px;border-top:0}
+.prob,.prob+.prob{padding:34px;border:1px solid var(--gline);border-radius:var(--r-xl);background:var(--glass)}
+.prob .n{font-size:44px;font-weight:700;line-height:1;background:linear-gradient(135deg,#8f99ff,#ff9a5a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.prob h3,.trust-item h3,.eff h3,.opt h3{color:#fff}
+.prob p,.trust-item p,.eff p,.opt p{color:rgba(255,255,255,.58)}
+.spot{position:relative;overflow:hidden;isolation:isolate}
+.spot:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(130,110,255,.22),transparent 45%);opacity:0;transition:opacity .4s}
+.spot:hover:before{opacity:1}
+.spot:hover{border-color:rgba(160,140,255,.45)!important}
+/* demo */
+.demo{background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(91,108,255,.22),transparent),#04050f}
+.step{background:var(--glass);backdrop-filter:blur(6px)}
+.step.active{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent;box-shadow:0 10px 36px -8px rgba(140,100,255,.8)}
+.twin{box-shadow:0 0 0 1px rgba(143,153,255,.18),0 30px 80px -20px rgba(91,108,255,.5)}
+.playbtn{background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:0 0 20px rgba(140,100,255,.7)}
+.tl-fill{background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3));box-shadow:0 0 12px rgba(160,120,255,.8)}
+.event-toast{background:linear-gradient(135deg,#fff,#e9e6ff);box-shadow:0 8px 30px rgba(140,100,255,.5)}
+.side{--black:#fff;--ink:#dfe3ff;--gray2:#9aa3d0;--line:rgba(255,255,255,.12);--line2:rgba(255,255,255,.2);--bg2:rgba(255,255,255,.05);--gray1:rgba(255,255,255,.07);--blue-soft:rgba(91,108,255,.16);--goodbg:rgba(94,224,176,.12);--checkbg:rgba(255,77,94,.13);
+ background:linear-gradient(160deg,rgba(30,36,80,.8),rgba(12,14,36,.9));border:1px solid rgba(143,153,255,.2);backdrop-filter:blur(14px);color:var(--ink);box-shadow:0 30px 80px -20px rgba(163,91,255,.4)}
+.side .btn.dark{background:#fff;color:#0b1024}
+.side .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.25)}
+.side .mini-top span:last-child,.ratio .new b{color:#aab3ff}
+.block{background:rgba(255,255,255,.04)}
+.block.sealed{background:rgba(94,224,176,.08);border-color:rgba(94,224,176,.45);box-shadow:0 0 14px -4px rgba(94,224,176,.5)}
+.block.bad{box-shadow:0 0 16px -2px rgba(255,77,94,.6)}
+.verify.ok{color:#5ee0b0}.verify.bad{color:#ff8a95}.verdict.no{color:#ff8a95}
+.buffer i.iso{background:linear-gradient(180deg,#8f99ff,#5b6cff);box-shadow:0 0 8px rgba(110,120,255,.7)}
+.buffer i.impact{background:#ff4d5e;box-shadow:0 0 10px #ff4d5e}
+.gauge i{background:linear-gradient(90deg,#ff9a5a,#ff4d5e);box-shadow:0 0 12px rgba(255,77,94,.7)}
+.ratio .new{border-color:rgba(143,153,255,.6);box-shadow:0 0 24px -6px rgba(110,120,255,.7)}
+.key.on{background:linear-gradient(135deg,var(--g1),var(--g2));border-color:transparent;box-shadow:0 0 18px rgba(140,100,255,.6)}
+/* process */
+.flow-card{background:var(--glass);box-shadow:none;border:1px solid var(--gline);color:#dfe3ff}
+.flow-card .label{color:#9aa4ff}
+.flow-card h3{color:#fff}
+.flow-list li{border-color:var(--gline)}
+.flow-card.new{background:linear-gradient(145deg,#3b45ff,#7a3dff 70%,#b44bd6);box-shadow:0 30px 80px -20px rgba(122,61,255,.8);border:0}
+.flow-card.new .label{background:none;-webkit-background-clip:initial;color:#e6e1ff}
+.flow-total{background:linear-gradient(180deg,#fff,#b9bfff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.flow-card:not(.new) .flow-total{background:linear-gradient(180deg,#9aa3d0,#555c80);-webkit-background-clip:text;background-clip:text}
+/* options */
+.opt{background:var(--glass);box-shadow:none;border:1px solid var(--gline);color:#dfe3ff}
+.opt ul{color:rgba(255,255,255,.75)}
+.opt .en{color:#aab3ff}
+.opt:hover{background:linear-gradient(150deg,#3b45ff,#7a3dff);box-shadow:0 30px 70px -20px rgba(122,61,255,.9);border-color:transparent!important}
+.opt .price{background:linear-gradient(90deg,#fff,#c3c9ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* trust */
+.node-map{background:radial-gradient(circle at 50% 50%,#141a4a,#070a1f);border:1px solid rgba(143,153,255,.2);box-shadow:0 0 60px -10px rgba(91,108,255,.5)}
+.node-map line{animation:dash 1.4s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-18}}
+.node-map circle[r="52"]{filter:drop-shadow(0 0 18px #5b6cff);animation:pulse 2.4s ease-in-out infinite;transform-origin:260px 180px}
+@keyframes pulse{50%{transform:scale(1.07)}}
+.trust-item{background:var(--glass);box-shadow:none;border:1px solid var(--gline)}
+/* effects */
+.eff div{border-top:0;padding:28px;border-radius:var(--r-xl);background:var(--glass);border:1px solid var(--gline);position:relative}
+.eff div:after{content:"";position:absolute;left:28px;right:28px;top:0;height:2px;background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3));border-radius:2px}
+.eff .en{color:#aab3ff}
+.cta{background:linear-gradient(120deg,#1a1f6b,#3a1b78 55%,#5e1f5a);box-shadow:0 30px 90px -20px rgba(163,91,255,.7)}
+.cta:after{background:radial-gradient(circle,rgba(255,122,26,.55),transparent 70%);animation:float1 10s ease-in-out infinite alternate}
+.cta:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:40px 40px}
+.cta .label{background:none;-webkit-background-clip:initial;color:#d6ceff}
+.footer{background:#03040c;border-top:1px solid var(--gline)}
+.disclaimer{color:rgba(255,255,255,.4)}
+.replay{position:absolute;left:50%;top:calc(50% - 22px);transform:translate(-50%,-50%) scale(.9);display:flex;align-items:center;gap:10px;padding:12px 22px 12px 14px;border-radius:120px;background:rgba(6,8,24,.7);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(10px);color:#fff;font-weight:700;font-size:15px;opacity:0;pointer-events:none;transition:.35s var(--ease);box-shadow:0 0 40px -6px rgba(140,100,255,.8)}
+.replay.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%)}
+.replay:hover{background:rgba(40,30,110,.85)}
+.replay span{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:linear-gradient(135deg,var(--g1),var(--g2))}
+.logo-mark{width:34px;height:34px;flex:none;filter:drop-shadow(0 0 10px rgba(130,100,255,.65));transition:transform .5s var(--ease)}
+.brand:hover .logo-mark{transform:rotate(60deg)}
+.brand:hover .logo-mark path,.brand:hover .logo-mark circle{transform-origin:17px 17px;transform:rotate(-60deg);transition:transform .5s var(--ease)}
+.logo-mark path,.logo-mark circle{transform-origin:17px 17px;transition:transform .5s var(--ease)}
+.logo-word{font-family:var(--font-en);font-weight:700;letter-spacing:2px;background:linear-gradient(90deg,#fff,#c3c9ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pg-hide{display:none!important}
+main>section,main>.ticker{animation:none}
+.navlinks a.on:after{transform:scaleX(1);background:linear-gradient(90deg,var(--g1),var(--g2),var(--g3));height:3px}
+.navlinks a.on{color:#fff}
+.wipe{position:fixed;top:0;bottom:0;left:-25vw;right:-25vw;z-index:200;pointer-events:none;transform:translateX(130%) skewX(-14deg);background:linear-gradient(120deg,#3b45ff,#7a3dff 55%,#c04bd0);display:grid;place-items:center;box-shadow:-30px 0 80px rgba(0,0,0,.5)}
+.wipe-back{z-index:199;background:#0b1024;box-shadow:none}
+.wipe.go{animation:wipe 1.25s cubic-bezier(.7,0,.3,1) forwards}
+.wipe-back.go{animation:wipe 1.25s cubic-bezier(.7,0,.3,1) .09s forwards}
+@keyframes wipe{0%{transform:translateX(130%) skewX(-14deg)}40%,58%{transform:translateX(0) skewX(-14deg)}100%{transform:translateX(-130%) skewX(-14deg)}}
+.wipe-in{display:flex;align-items:center;gap:28px;transform:skewX(14deg)}
+.wipe.go .wipe-in{animation:wipein 1.25s cubic-bezier(.7,0,.3,1) forwards}
+@keyframes wipein{0%{opacity:0;translate:180px 0}40%{opacity:1;translate:0 0}58%{opacity:1;translate:-20px 0}100%{opacity:0;translate:-200px 0}}
+.wipe-in svg{width:120px;height:120px;filter:drop-shadow(0 10px 30px rgba(0,0,0,.35))}
+.wipe.go .wipe-in svg{animation:wspin 1.25s cubic-bezier(.7,0,.3,1) forwards}
+@keyframes wspin{0%{transform:rotate(-120deg) scale(.6)}40%,58%{transform:rotate(0) scale(1)}100%{transform:rotate(60deg) scale(.8)}}
+.wipe-word{font-family:var(--font-en);font-weight:700;font-size:110px;line-height:.9;letter-spacing:10px;color:#fff}
+.wipe-title{margin-top:12px;font-size:22px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.5px}
+.wipe-title b{font-family:var(--mono);color:#ffd2b0;margin-right:10px}
+.pager{position:fixed;right:24px;bottom:24px;z-index:60;display:flex;align-items:center;gap:12px;padding:6px;border-radius:120px;background:rgba(10,12,34,.72);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(14px);color:#fff;box-shadow:0 10px 40px -10px rgba(110,90,255,.6)}
+.pager button{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-size:16px;background:rgba(255,255,255,.08);transition:.25s var(--ease)}
+.pager button:hover{background:linear-gradient(135deg,var(--g1),var(--g2))}
+.pg-num{font-family:var(--mono);font-size:13px;color:#aab3ff;white-space:nowrap}
+.pg-name{font-size:14px;font-weight:700;min-width:84px}
+@media(max-width:768px){.wipe-word{font-size:64px}.wipe-in svg{width:72px;height:72px}.pg-name{display:none}}
+/* reveal */
+.rv{opacity:0;transform:translateY(36px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}*{animation:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar">
+ <div class="wrap nav">
+  <a class="brand" href="#top"><svg class="logo-mark" viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="lgA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b6cff"/><stop offset="1" stop-color="#a35bff"/></linearGradient></defs><polygon points="17,1.5 30.5,9.25 30.5,24.75 17,32.5 3.5,24.75 3.5,9.25" fill="url(#lgA)"/><path d="M10.5 11 L17 21.5 L23.5 11" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="26" r="2.4" fill="#ff9a5a"/></svg><span class="logo-word">VAR</span></a>
+  <nav class="navlinks"><a href="#problem">문제</a><a href="#demo">사고 복원 시연</a><a href="#process">처리 프로세스</a><a href="#coverage">전 차종 확장</a><a href="#trust">신뢰 구조</a><a href="#impact">기대효과</a></nav>
+  <a class="btn pill" href="#demo" onclick="startAuto()">자동 시연 ▶</a>
+ </div>
+</header>
+
+<main id="top">
+<section class="hero">
+ <div class="hero-grid"></div><div class="aurora"></div>
+ <div class="wrap hero-inner">
+  <div>
+   <div class="label">Physical AI × Blockchain × Digital Twin</div>
+   <h1>블랙박스가 못 본 8초,<br><em>물리 법칙</em>이 증명합니다.</h1>
+   <p>사고 순간의 주행 수치를 차량 안에서 즉시 봉인하고, 클라우드 디지털 트윈에서 3D로 복원해 과실을 수학적으로 계산합니다. 수개월 걸리던 과실 분쟁을 당일 정산으로.</p>
+   <div class="hero-actions"><a class="btn primary" href="#demo" onclick="goStep(0)">사고 복원 시연 시작 →</a><a class="btn pill" href="#process" style="padding:12.6px 25.2px">처리 프로세스 보기</a></div>
+   <div class="hero-kpis"><div><b>8s</b><span>사고 전후 데이터 격리</span></div><div><b>3s</b><span>온체인 봉인</span></div><div><b>3min</b><span>3D 복원·과실 연산</span></div><div><b>D-0</b><span>AI 리포트 정산</span></div></div>
+  </div>
+  <div class="dash-wrap"><figure class="dashcam" aria-label="블랙박스 화면: 옆 차가 끼어들어 충돌하는 순간 8초 데이터가 봉인되는 장면">
+   <canvas id="dashcam"></canvas><button class="replay" id="replayBtn" aria-label="사고 영상 다시 재생"><span>▶</span>다시 재생</button>
+   <figcaption><span><i class="dot-rec"></i>전방 블랙박스 · 차량 센서 동시 기록</span><span>충돌 순간 8초 자동 봉인</span></figcaption>
+  </figure></div>
+ </div>
+</section>
+
+<div class="ticker" aria-hidden="true"><div class="ticker-track"><span>PHYSICAL AI<i></i>EDGE TRIGGER 8s<i></i>HSM SIGNATURE<i></i>BLOCKCHAIN SEAL<i></i>DIGITAL TWIN 10ms<i></i>PHYSICS-BASED FAULT<i></i>TRIPLE KEY<i></i>D-0 SETTLEMENT<i></i></span><span>PHYSICAL AI<i></i>EDGE TRIGGER 8s<i></i>HSM SIGNATURE<i></i>BLOCKCHAIN SEAL<i></i>DIGITAL TWIN 10ms<i></i>PHYSICS-BASED FAULT<i></i>TRIPLE KEY<i></i>D-0 SETTLEMENT<i></i></span></div></div>
+<section class="section" id="problem">
+ <div class="wrap">
+  <div class="section-head"><div><div class="label">Why VAR</div><h2 class="h2">지금의 과실 판단은<br>영상과 진술에 기대고 있습니다</h2></div></div>
+  <div class="prob-grid">
+   <article class="prob"><div class="n">01</div><h3>블랙박스의 사각지대</h3><p>카메라 화각 밖의 움직임, 야간 착시, 순간 프레임 누락. 영상만으로는 제동 시점과 속도를 증명할 수 없습니다.</p></article>
+   <article class="prob"><div class="n">02</div><h3>불투명한 합의 관행</h3><p>100:0 사고도 80:20으로 정리되는 상계 관행, 수개월 걸리는 과실비율 분쟁 심의. 억울해도 반박할 근거가 없습니다.</p></article>
+   <article class="prob"><div class="n">03</div><h3>자율주행 책임의 공백</h3><p>레벨 3 이상 자율주행 시대, "운전자 과실인가 시스템 결함인가"를 가릴 공인된 도구가 아직 없습니다.</p></article>
+  </div>
+ </div>
+</section>
+
+<section class="demo" id="demo">
+ <div class="wrap">
+  <div class="section-head"><div><div class="label">Live Reconstruction Demo</div><h2 class="h2">사고 한 건, 4단계로 진실을 복원합니다</h2><p class="lead">시나리오: 2차로를 60km/h로 달리던 차량 A가 앞차 B를 들이받았습니다. 블랙박스만 보면 전형적인 후미추돌입니다. 정말 A의 잘못일까요?</p></div><button class="btn primary" onclick="startAuto()" id="autoBtn">자동 시연 ▶</button></div>
+
+  <div class="steps" id="steps">
+   <button class="step active" onclick="goStep(0)"><span class="no">STEP 01</span><b>엣지 AI 트리거</b><small>충격 감지 · 8초 격리</small></button>
+   <button class="step" onclick="goStep(1)"><span class="no">STEP 02</span><b>블록체인 봉인</b><small>HSM 서명 · 해시 체인</small></button>
+   <button class="step" onclick="goStep(2)"><span class="no">STEP 03</span><b>디지털 트윈 복원</b><small>HD맵 · 10ms 타임라인</small></button>
+   <button class="step" onclick="goStep(3)"><span class="no">STEP 04</span><b>과실 연산 · 리포트</b><small>회피 가능성 · 과실비율</small></button>
+  </div>
+
+  <div class="console">
+   <div class="twin">
+    <div class="twin-head"><div class="tt">디지털 트윈 · 사고 재구성 뷰</div><div style="display:flex;gap:6px"><span class="chip live" id="liveChip">REPLAY</span><span class="chip" id="sealChip">미봉인</span></div></div>
+    <div class="canvas-wrap">
+     <canvas id="scene" aria-label="사고 재구성 장면"></canvas>
+     <div class="hud"><div>차량 A 속도<b id="hudA">60.0</b></div><div>차량 B 속도<b id="hudB">45.0</b></div><div>차간 거리<b id="hudGap">-</b></div><div>A 제동압<b id="hudBrake">0</b></div></div>
+     <div class="event-toast" id="evToast"></div>
+    </div>
+    <div class="timeline">
+     <div class="tl-row">
+      <button class="playbtn" id="playBtn" onclick="togglePlay()" aria-label="재생">▶</button>
+      <div class="tl-track" id="tlTrack"><div class="tl-bar"></div><div class="tl-fill" id="tlFill"></div><div id="tlMarks"></div><div class="tl-knob" id="tlKnob"></div><input type="range" id="tl" min="-6" max="2" step="0.01" value="-6" aria-label="사고 타임라인"></div>
+      <div class="speedsel" id="speedSel"><button onclick="setSpeed(.25,this)">0.25×</button><button class="on" onclick="setSpeed(.5,this)">0.5×</button><button onclick="setSpeed(1,this)">1×</button></div>
+      <div class="tl-time" id="tlTime">T-6.00s</div>
+     </div>
+     <div class="tl-labels" id="tlLabels"></div>
+    </div>
+   </div>
+
+   <aside class="side">
+    <!-- STEP 1 -->
+    <div class="pane active" data-pane="0">
+     <div class="label">Step 01 · Edge AI</div>
+     <h3>충격을 감지하는 순간, 8초만 격리</h3>
+     <p class="desc">평소엔 차량 안 링버퍼에만 보관하다가, 가속도가 임계값을 넘는 순간 사고 전 6초~후 2초만 잘라 암호화합니다. 영상이 아닌 물리 수치라 개인정보 부담이 적습니다.</p>
+     <div class="mini"><div class="mini-top"><span>종방향 가속도 (G) · 임계 1.5g</span><span id="gNow">0.00g</span></div><canvas id="gChart"></canvas></div>
+     <div class="mini-top" style="margin-top:4px"><span>링버퍼 30초 → 격리 구간</span><span id="bufState" style="font-family:var(--mono);color:var(--gray2)">감시 중</span></div>
+     <div class="buffer" id="buffer"></div>
+     <div class="kv"><div>수집 항목<b>조향각·제동압·G·속도</b></div><div>샘플 간격<b>10 ms</b></div><div>격리 샘플 수<b id="sampleCnt">801</b></div><div>전송 크기<b>≈ 38 KB</b></div></div>
+     <div class="side-foot"><button class="btn primary" onclick="goStep(1)">다음: 블록체인 봉인 →</button></div>
+    </div>
+    <!-- STEP 2 -->
+    <div class="pane" data-pane="1">
+     <div class="label">Step 02 · Blockchain</div>
+     <h3>1초 단위 8개 블록으로 봉인</h3>
+     <p class="desc">각 블록은 차량 HSM 보안칩이 서명하고, 앞 블록 해시를 품어 사슬로 이어집니다. 한 값만 바꿔도 사슬이 끊어집니다.</p>
+     <div class="chain" id="chain"></div>
+     <div class="verify wait" id="verifyBox">봉인 대기 중</div>
+     <div class="offchain"><span>📹 4K 영상 · 라이다 원본 (오프체인 보안 클라우드)</span><span class="mono" id="offHash">hash ✓</span></div>
+     <div class="side-foot"><button class="btn dark" onclick="tamper()" id="tamperBtn">위·변조 시도해 보기</button><button class="btn ghost" onclick="restore()">원본 복구</button></div>
+    </div>
+    <!-- STEP 3 -->
+    <div class="pane" data-pane="2">
+     <div class="label">Step 03 · Digital Twin</div>
+     <h3>HD맵 위에 10ms 단위로 재현</h3>
+     <p class="desc">타임라인을 움직이면 왼쪽 장면과 센서 그래프가 함께 움직입니다. B가 언제 끼어들었고 A가 언제 밟았는지 수치로 보입니다.</p>
+     <div class="mini"><div class="mini-top"><span>A 속도 (km/h)</span><span id="cvA">-</span></div><canvas class="tchart" data-key="vA"></canvas></div>
+     <div class="mini"><div class="mini-top"><span>A 제동압 (bar)</span><span id="cvBr">-</span></div><canvas class="tchart" data-key="brake"></canvas></div>
+     <div class="mini"><div class="mini-top"><span>B 횡방향 위치 (m, 0 = A 차로 중앙)</span><span id="cvY">-</span></div><canvas class="tchart" data-key="yB"></canvas></div>
+     <div class="mini"><div class="mini-top"><span>차간 거리 (m)</span><span id="cvGap">-</span></div><canvas class="tchart" data-key="gap"></canvas></div>
+     <div class="side-foot"><button class="btn primary" onclick="goStep(3)">다음: 과실 연산 →</button></div>
+    </div>
+    <!-- STEP 4 -->
+    <div class="pane" data-pane="3">
+     <div class="label">Step 04 · Physics-based Fault</div>
+     <h3>회피할 수 있었는가?</h3>
+     <div class="calc">
+      <div>B가 A 차로에 진입한 순간 확보된 거리</div>
+      <div class="f">확보 거리 = <b id="dAvail">-</b> m</div>
+      <div>평균 반응시간 1.0s, 최대 감속 0.76g 기준 충돌을 피하는 데 필요한 거리</div>
+      <div class="f" style="font-family:var(--font);line-height:1.7">필요 거리 = <span style="color:#aab3ff">반응하는 동안 달린 거리</span> + <span style="color:#ff9a5a">브레이크 밟고 멈출 때까지 거리</span></div><div class="f" style="font-family:var(--font);font-size:12px;color:var(--gray2)">= (속도 차이 × 반응시간 1.0초) + (속도 차이² ÷ (2 × 감속도 0.76g))</div><div class="f">= <b id="dNeed">-</b> m</div>
+      <div class="gauge"><i id="gaugeFill"></i><u id="gaugeMark"></u></div>
+      <div class="gauge-legend" style="position:relative"><span>0 m</span><span id="gaugeLbl" style="position:absolute;transform:translateX(-50%)">▲ 확보 거리</span><span id="gaugeMax">-</span></div>
+     </div>
+     <div class="verdict no" id="verdict">⚠️ 물리적으로 회피 불가능</div>
+     <div class="ratio"><div class="old"><small>블랙박스 영상만 볼 때 (후미추돌)</small><b>A100 : B0</b></div><div class="new"><small>VAR 물리 연산 결과</small><b id="ratioNew">-</b></div></div>
+     <ul class="mods" id="mods"></ul>
+     <div class="report locked" id="report"><div class="report-body" id="reportBody"></div><div class="lock">🔒 3중 열람키가 모두 일치해야 리포트가 열립니다</div></div>
+     <div class="keys" id="keys"><button class="key" data-k="0"><span class="ic">🙋</span>운전자 동의</button><button class="key" data-k="1"><span class="ic">⚖️</span>법원 명령</button><button class="key" data-k="2"><span class="ic">🏢</span>보험사 요청</button></div>
+    </div>
+   </aside>
+  </div>
+  <p class="disclaimer">※ 시나리오·차량 수치·과실 계산은 이해를 돕기 위해 과실비율 인정기준을 단순화한 시연용 모델입니다.</p>
+ </div>
+</section>
+
+<section class="section" id="process">
+ <div class="wrap">
+  <div class="section-head"><div><div class="label">Process Shift</div><h2 class="h2">주관적 합의에서<br>디지털 실시간 정산으로</h2></div></div>
+  <div class="flow">
+   <div class="flow-card"><div class="label">Today</div><h3>지금의 사고 처리</h3>
+    <ul class="flow-list"><li><span class="t">사고</span><div>블랙박스 영상 확보<p>화각·화질에 따라 증거력이 달라짐</p></div></li><li><span class="t">접수</span><div>양측 보험사 진술 대립<p>기억과 주장에 의존</p></div></li><li><span class="t">심의</span><div>과실비율 분쟁 심의<p>대기와 재심의로 장기화</p></div></li><li><span class="t">소송</span><div>불복 시 법원 감정·소송<p>비용과 시간이 추가로 발생</p></div></li></ul>
+    <div class="flow-total">수개월+<small>분쟁 종결까지</small></div></div>
+   <div class="flow-card new"><div class="label">With VAR</div><h3>VAR 도입 후</h3>
+    <ul class="flow-list"><li><span class="t">0s</span><div>엣지 AI 트리거<p>사고 8초 수치 자동 격리·암호화</p></div></li><li><span class="t">3s</span><div>블록체인 업로드<p>HSM 서명 + 해시 체인으로 위·변조 차단</p></div></li><li><span class="t">3min</span><div>디지털 트윈 복원·과실 연산<p>HD맵 위 3D 재구성, 회피 가능성 계산</p></div></li><li><span class="t">D-0</span><div>AI 공인 리포트 · 즉시 합의<p>심의 단계를 생략하고 당일 종결</p></div></li></ul>
+    <div class="flow-total">당일<small>정산 목표</small></div></div>
+  </div>
+ </div>
+</section>
+
+<section class="section alt" id="coverage">
+ <div class="wrap">
+  <div class="section-head"><div><div class="label">Every Vehicle</div><h2 class="h2">최신 차도, 오래된 차도<br>같은 수준의 증거를</h2></div></div>
+  <div class="opt-grid">
+   <div class="opt"><span class="en">Option A · 최신 ADAS 차량</span><h3>소프트웨어로 바로</h3><p>이미 탑재된 센서를 그대로 활용합니다.</p><ul><li>OTA 소프트웨어 업데이트</li><li>HSM 보안칩 추가</li></ul><div class="price">≈ 0%<span style="font-size:14px;font-weight:600"> 단가 상승</span></div></div>
+   <div class="opt"><span class="en">Option B · 노후 차량</span><h3>애프터마켓 키트</h3><p>제조사 장벽이 없어 오히려 빠르게 진입합니다.</p><ul><li>OBD-II 리더: 조향각·브레이크·RPM</li><li>고정형 소형 라이다·레이더 + 4K 비전 AI</li></ul><div class="price">40~60만 원<span style="font-size:14px;font-weight:600"> 프리미엄 블랙박스 수준</span></div></div>
+   <div class="opt"><span class="en">V2X · 협력 복원</span><h3>상대 차와 도시가 대신 측정</h3><p>센서가 없는 차도 공공 데이터로 역복원합니다.</p><ul><li>상대 최신 차의 라이다가 내 차 움직임 스캔</li><li>스마트 가로등 CCTV와 ms 단위 타임라인 결합</li></ul><div class="price">0원<span style="font-size:14px;font-weight:600"> 구형 차주 추가 부담</span></div></div>
+  </div>
+ </div>
+</section>
+
+<section class="section" id="trust">
+ <div class="wrap">
+  <div class="section-head"><div><div class="label">Trust Architecture</div><h2 class="h2">감시 도구가 아니라,<br>누구도 독점할 수 없는 증거</h2></div></div>
+  <div class="trust">
+   <div class="node-map">
+    <svg viewBox="0 0 520 360" role="img" aria-label="컨소시엄 블록체인 노드 구조">
+     <defs><radialGradient id="cg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#4553ff" stop-opacity=".55"/><stop offset="1" stop-color="#4553ff" stop-opacity="0"/></radialGradient></defs>
+     <circle cx="260" cy="180" r="120" fill="url(#cg)"/>
+     <g stroke="rgba(255,255,255,.25)" stroke-width="1.5" stroke-dasharray="4 5"><line x1="260" y1="180" x2="110" y2="80"/><line x1="260" y1="180" x2="410" y2="80"/><line x1="260" y1="180" x2="110" y2="285"/><line x1="260" y1="180" x2="410" y2="285"/><line x1="110" y1="80" x2="410" y2="80"/><line x1="110" y1="285" x2="410" y2="285"/><line x1="110" y1="80" x2="110" y2="285"/><line x1="410" y1="80" x2="410" y2="285"/></g>
+     <g font-family="Pretendard,sans-serif" font-weight="700" text-anchor="middle" fill="#fff">
+      <circle cx="260" cy="180" r="52" fill="#0515d8"/><text x="260" y="176" font-size="15">사고 원장</text><text x="260" y="196" font-size="11" fill="#c9cffc" font-weight="500">8초 봉인 데이터</text>
+      <circle cx="110" cy="80" r="40" fill="#141a33" stroke="#8f99ff"/><text x="110" y="85" font-size="14">정부</text>
+      <circle cx="410" cy="80" r="40" fill="#141a33" stroke="#8f99ff"/><text x="410" y="85" font-size="14">법원</text>
+      <circle cx="110" cy="285" r="40" fill="#141a33" stroke="#8f99ff"/><text x="110" y="290" font-size="14">시민단체</text>
+      <circle cx="410" cy="285" r="40" fill="#141a33" stroke="#8f99ff"/><text x="410" y="290" font-size="14">보험사</text>
+     </g>
+    </svg>
+   </div>
+   <div class="trust-list">
+    <div class="trust-item"><div class="label">Consortium Blockchain</div><h3>노드를 4곳이 나눠 갖습니다</h3><p>정부가 독점하는 폐쇄 서버가 아니라 정부·법원·시민단체·보험사가 함께 원장을 지킵니다.</p></div>
+    <div class="trust-item"><div class="label">Triple Key</div><h3>열쇠 세 개가 맞아야 열립니다</h3><p>운전자 동의 + 법원 명령 + 보험사 요청이 동시에 일치할 때만 복호화됩니다. 시연 4단계에서 직접 열어 보세요.</p></div>
+    <div class="trust-item"><div class="label">Serverless</div><h3>사고가 날 때만 켜집니다</h3><p>모든 차를 상시 수집하지 않고, 사고 8초가 들어올 때만 연산 서버가 가동되어 유지비와 감시 우려를 함께 줄입니다.</p></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section class="section alt" id="impact">
+ <div class="wrap">
+  <div class="section-head"><div><div class="label">Impact</div><h2 class="h2">기대효과</h2></div></div>
+  <div class="eff">
+   <div><span class="en">Justice</span><h3>억울한 과실을 수치로</h3><p>주관적 분쟁 대신 물리 법칙으로 약자 차주의 무과실을 입증합니다.</p></div>
+   <div><span class="en">Cost</span><h3>분쟁·소송 비용 절감</h3><p>손해사정 인건비, 소송비, 고의 보험사기를 줄여 보험료 인하 여력을 만듭니다.</p></div>
+   <div><span class="en">Autonomy</span><h3>자율주행 책임의 표준</h3><p>제조사와 운전자 사이 책임을 가르는 국가 공인 도구로 자리 잡습니다.</p></div>
+  </div>
+  <div class="cta"><div><div class="label">Business Model</div><h2>보험사가 내는 건당 AI 감정 수수료로<br>세금 없이 스스로 운영합니다.</h2></div><a class="btn primary" href="#demo" onclick="startAuto()">시연 다시 보기 ▶</a></div>
+ </div>
+</section>
+</main>
+
+<div class="wipe wipe-back" id="wipe2"></div><div class="wipe" id="wipe"><div class="wipe-in"><svg viewBox="0 0 34 34" aria-hidden="true"><polygon points="17,1.5 30.5,9.25 30.5,24.75 17,32.5 3.5,24.75 3.5,9.25" fill="#fff"/><path d="M10.5 11 L17 21.5 L23.5 11" fill="none" stroke="#4a3dff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="26" r="2.4" fill="#ff7a1a"/></svg><div><div class="wipe-word">VAR</div><div class="wipe-title" id="wipeTitle"></div></div></div></div>
+<div class="pager" id="pager"><button id="pgPrev" aria-label="이전 메뉴">←</button><span class="pg-num" id="pgNum">01 / 07</span><span class="pg-name" id="pgName">홈</span><button id="pgNext" aria-label="다음 메뉴">→</button></div>
+<footer class="footer"><div class="wrap"><div class="brand"><svg class="logo-mark" viewBox="0 0 34 34" aria-hidden="true"><defs><linearGradient id="lgB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b6cff"/><stop offset="1" stop-color="#a35bff"/></linearGradient></defs><polygon points="17,1.5 30.5,9.25 30.5,24.75 17,32.5 3.5,24.75 3.5,9.25" fill="url(#lgB)"/><path d="M10.5 11 L17 21.5 L23.5 11" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="17" cy="26" r="2.4" fill="#ff9a5a"/></svg><span class="logo-word">VAR</span></div>피지컬 AI와 블록체인 기반의 3D 자동차 사고 복원 및 과실 산정 플랫폼<br>2026 전문대학 연합 Career-UP AI 해커톤 시연용 프로토타입 · 화면 속 사고 데이터와 과실 계산은 시연용 가상 모델입니다.<br><span class="en">© 2026 VAR Team.</span></div></footer>
+
+<script>
+/* ============ SHA-256 (오프라인 동작용 순수 JS 구현) ============ */
+function sha256(input){var ascii=unescape(encodeURIComponent(input));function rr(v,a){return(v>>>a)|(v<<(32-a))}var mp=Math.pow,mw=mp(2,32),i,j,result='',words=[],bitLen=ascii.length*8,hash=sha256.h=sha256.h||[],k=sha256.k=sha256.k||[],pc=k.length,isC={};for(var c=2;pc<64;c++){if(!isC[c]){for(i=0;i<313;i+=c)isC[i]=c;hash[pc]=(mp(c,.5)*mw)|0;k[pc++]=(mp(c,1/3)*mw)|0}}ascii+='\x80';while(ascii.length%64-56)ascii+='\x00';for(i=0;i<ascii.length;i++){j=ascii.charCodeAt(i);words[i>>2]|=j<<((3-i)%4)*8}words[words.length]=((bitLen/mw)|0);words[words.length]=bitLen;for(j=0;j<words.length;){var w=words.slice(j,j+=16),old=hash;hash=hash.slice(0,8);for(i=0;i<64;i++){var w15=w[i-15],w2=w[i-2],a=hash[0],e=hash[4];var t1=hash[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&hash[5])^((~e)&hash[6]))+k[i]+(w[i]=(i<16)?w[i]:(w[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);var t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));hash=[(t1+t2)|0].concat(hash);hash[4]=(hash[4]+t1)|0}for(i=0;i<8;i++)hash[i]=(hash[i]+old[i])|0}for(i=0;i<8;i++){for(j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;result+=((b<16)?0:'')+b.toString(16)}}return result}
+
+/* ============ 사고 시나리오 물리 시뮬레이션 ============ */
+const L=4.6, W=1.85, LANE=3.5, DT=0.01, T0=-6, T1=2;
+const vA0=60/3.6, vB0=45/3.6, DEC=7.5, T_BRAKE=-0.2, LC_START=-1.6, LC_END=-0.2, T_SIGNAL=-1.4, T_CUT=-0.9, REACT_AVG=1.0;
+function smooth(x){x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)}
+function xAPre(t){if(t<=T_BRAKE)return vA0*(t-T0);const d=t-T_BRAKE;return vA0*(T_BRAKE-T0)+vA0*d-0.5*DEC*d*d}
+const xB_at0=xAPre(0)+L;
+function buildSim(){const s=[];let xA,xB,vA,vB;
+ for(let n=0;n<=Math.round((T1-T0)/DT);n++){const t=+(T0+n*DT).toFixed(2);
+  if(t<=0){vA=t<=T_BRAKE?vA0:vA0-DEC*(t-T_BRAKE);xA=xAPre(t);vB=vB0;xB=xB_at0+vB0*t;
+   if(t===0){const e=0.2,m=(vA+vB)/2,d=(vA-vB)/2;vA=m-e*d;vB=m+e*d}}
+  else{vA=Math.max(0,vA-DEC*DT);vB=Math.max(0,vB-(t>0.4?4:0.5)*DT);xA+=vA*DT;xB+=vB*DT;if(xB-xA<L){xB=xA+L}}
+  const yB=LANE*(1-smooth((t-LC_START)/(LC_END-LC_START)));
+  const brake=t<T_BRAKE?0:Math.min(88,88*(t-T_BRAKE)/0.15);
+  let g=t<T_BRAKE?0:-(DEC/9.81);if(t>=0&&t<0.06)g=-3.1;else if(t>=0.06&&vA<=0)g=0;
+  const steer=(t>-0.15&&t<0.05)?-4*Math.sin((t+0.15)/0.2*Math.PI):0;
+  s.push({t,xA,xB,yB,vA:vA*3.6,vB:vB*3.6,brake,g,steer,gap:xB-xA-L,sig:t>=T_SIGNAL&&t<LC_END+0.6})}
+ return s}
+const SIM=buildSim();
+function at(t){const i=Math.max(0,Math.min(SIM.length-1,Math.round((t-T0)/DT)));return SIM[i]}
+const vRel=(vA0-vB0), dAvail=at(T_CUT).gap, dNeed=vRel*REACT_AVG+vRel*vRel/(2*DEC), avoidable=dNeed<=dAvail;
+const reactReal=T_BRAKE-T_CUT;
+
+/* ============ 과실 연산 (시연용 단순 모델) ============ */
+function faultCalc(){let A=30,B=70;const mods=[['기본: 진로변경 차량(B) 과실 우선','A30 : B70']];
+ if(T_SIGNAL>LC_START){B+=10;A-=10;mods.push([`B 방향지시등 진로변경 시작 ${(T_SIGNAL-LC_START).toFixed(1)}s 뒤 점등`,'B +10'])}
+ if(!avoidable){const d=Math.min(10,A);A-=d;B+=d;mods.push([`A 회피 불가능 (필요 ${dNeed.toFixed(1)}m > 확보 ${dAvail.toFixed(1)}m)`,`A −${d}`])}
+ mods.push([`A 실제 반응시간 ${reactReal.toFixed(1)}s (평균 1.0s보다 빠름)`,'가산 없음']);
+ return {A,B,mods}}
+const FAULT=faultCalc();
+
+/* ============ 공통 상태 ============ */
+let curT=T0, playing=false, speed=.5, lastTs=0, step=0, sealed=false, tampered=false, autoTimer=null;
+const $=id=>document.getElementById(id);
+
+/* ============ 장면 렌더링 ============ */
+const cv=$('scene'), ctx=cv.getContext('2d');
+function fitCanvas(c){const r=c.getBoundingClientRect(),d=Math.min(2,window.devicePixelRatio||1);c.width=Math.max(1,r.width*d);c.height=Math.max(1,r.height*d);c.getContext('2d').setTransform(d,0,0,d,0,0);return r}
+function rr(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function drawCar(c,cx,cy,sc,color,label,opts={}){const w=L*sc,h=W*sc;c.save();c.translate(cx,cy);if(opts.rot)c.rotate(opts.rot);
+ c.globalAlpha=opts.alpha??1;
+ if(!opts.ghost){const hg=c.createLinearGradient(w/2,0,w/2+w*1.1,0);hg.addColorStop(0,'rgba(255,240,200,.38)');hg.addColorStop(1,'rgba(255,240,200,0)');c.fillStyle=hg;c.beginPath();c.moveTo(w/2,-h*.38);c.lineTo(w/2+w*1.1,-h*.8);c.lineTo(w/2+w*1.1,h*.8);c.lineTo(w/2,h*.38);c.closePath();c.fill()}
+ if(!opts.ghost){c.shadowColor=color;c.shadowBlur=18}
+ rr(c,-w/2,-h/2,w,h,h*.28);c.fillStyle=opts.ghost?'transparent':color;c.fill();c.shadowBlur=0;c.lineWidth=opts.ghost?1.5:0;c.strokeStyle=color;if(opts.ghost)c.stroke();
+ if(!opts.ghost){c.fillStyle='rgba(255,255,255,.28)';rr(c,w*.05,-h/2+3,w*.22,h-6,3);c.fill();rr(c,-w*.32,-h/2+3,w*.18,h-6,3);c.fill();
+  if(opts.brake){c.fillStyle='#ff3b4d';c.shadowColor='#ff3b4d';c.shadowBlur=14;c.fillRect(-w/2-2,-h/2+2,4,5);c.fillRect(-w/2-2,h/2-7,4,5);c.shadowBlur=0}
+  if(opts.signal&&Math.floor(performance.now()/250)%2===0){c.fillStyle='#ffb020';c.shadowColor='#ffb020';c.shadowBlur=12;c.beginPath();c.arc(w/2-3,-h/2+1,3.2,0,7);c.fill();c.beginPath();c.arc(-w/2+3,-h/2+1,3.2,0,7);c.fill();c.shadowBlur=0}
+  c.fillStyle='rgba(255,255,255,.95)';c.beginPath();c.moveTo(w/2-3,0);c.lineTo(w/2-10,-4.5);c.lineTo(w/2-10,4.5);c.closePath();c.fill();
+  c.fillStyle='#fff';c.font='700 12px Pretendard,sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText(label,0,0)}
+ c.restore()}
+function drawScene(){const r=fitCanvas(cv),Wd=r.width,Ht=r.height,s=at(curT),sc=Math.min(15,Wd/40);
+ const camX=(s.xA+s.xB)/2, ox=Wd/2-camX*sc, oy=Ht/2+LANE*sc*0.15;
+ const X=x=>ox+x*sc, Y=y=>oy+y*sc;
+ ctx.fillStyle='#0b1024';ctx.fillRect(0,0,Wd,Ht);
+ ctx.fillStyle='rgba(143,153,255,.12)';for(let gx=Math.floor(-ox/(sc*5))*sc*5+ox%(sc*5);gx<Wd;gx+=sc*5)for(let gy=0;gy<Ht;gy+=sc*5)ctx.fillRect(gx,gy,1.5,1.5);
+ const top=Y(-LANE*1.5),bot=Y(LANE*1.5);
+ ctx.fillStyle='#161d3a';ctx.fillRect(0,top,Wd,bot-top);
+ ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=2;ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(0,top);ctx.lineTo(Wd,top);ctx.moveTo(0,bot);ctx.lineTo(Wd,bot);ctx.stroke();
+ ctx.strokeStyle='rgba(255,255,255,.45)';ctx.setLineDash([3*sc,3*sc]);ctx.lineDashOffset=(ox)%(6*sc);
+ [-LANE/2,LANE/2].forEach(y=>{ctx.beginPath();ctx.moveTo(0,Y(y));ctx.lineTo(Wd,Y(y));ctx.stroke()});ctx.setLineDash([]);
+ ctx.strokeStyle='rgba(143,153,255,.3)';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.lineJoin='round';{const sp=10,ch=sc*.7;for(let wx=Math.floor((-ox/sc)/sp)*sp;X(wx)<Wd+20;wx+=sp){[-LANE,0,LANE].forEach(y=>{const px=X(wx),py=Y(y);ctx.beginPath();ctx.moveTo(px-ch*.6,py-ch);ctx.lineTo(px+ch*.4,py);ctx.lineTo(px-ch*.6,py+ch);ctx.stroke()})}}ctx.lineCap='butt';
+ ctx.fillStyle='rgba(255,255,255,.75)';ctx.font='700 12px Pretendard,sans-serif';ctx.textAlign='right';ctx.fillText('진행방향 →',Wd-14,top-10);
+ ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='600 11px Pretendard,sans-serif';ctx.textAlign='left';ctx.fillText('1차로',8,Y(-LANE)+4);ctx.fillText('2차로',8,Y(0)+4);ctx.fillText('3차로',8,Y(LANE)+4);
+ for(let gt=-6;gt<=Math.min(curT,2);gt+=0.5){if(Math.abs(gt-curT)<0.25)continue;const g=at(gt);drawCar(ctx,X(g.xA),Y(0),sc,'#4553ff','',{ghost:true,alpha:.22});drawCar(ctx,X(g.xB),Y(g.yB),sc,'#ff7a1a','',{ghost:true,alpha:.22})}
+ if(curT>LC_START-0.4&&curT<0.2){ctx.save();ctx.translate(X(s.xB),Y(s.yB));ctx.fillStyle='rgba(255,122,26,.10)';ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,sc*9,Math.PI*0.75,Math.PI*1.25);ctx.closePath();ctx.fill();ctx.restore()}
+ if(s.yB<LANE/2+W/2&&curT<0){const ax=X(s.xA+L/2),bx=X(s.xB-L/2),yy=Y(0)+W*sc*0.9;ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(ax,yy);ctx.lineTo(bx,yy);ctx.moveTo(ax,yy-5);ctx.lineTo(ax,yy+5);ctx.moveTo(bx,yy-5);ctx.lineTo(bx,yy+5);ctx.stroke();ctx.fillStyle='#fff';ctx.font='600 12px JetBrains Mono,monospace';ctx.textAlign='center';ctx.fillText(Math.max(0,s.gap).toFixed(2)+' m',(ax+bx)/2,yy+16)}
+ const rot=(LC_START<curT&&curT<LC_END)?-Math.sin(Math.PI*(curT-LC_START)/(LC_END-LC_START))*0.12:0;
+ drawCar(ctx,X(s.xB),Y(s.yB),sc,'#ff7a1a','B',{rot,signal:s.sig});
+ drawCar(ctx,X(s.xA),Y(0),sc,'#4553ff','A',{brake:s.brake>1,rot:s.steer*Math.PI/180});
+ if(curT>=0&&curT<0.6){const a=1-curT/0.6;ctx.strokeStyle=`rgba(255,77,94,${a})`;ctx.lineWidth=3;ctx.beginPath();ctx.arc(X(s.xA+L/2),Y(0),sc*(1+curT*6),0,7);ctx.stroke()}
+ if(sealed){ctx.fillStyle='rgba(94,224,176,.9)';ctx.font='700 11px Pretendard,sans-serif';ctx.textAlign='right';ctx.fillText('🔒 해시 검증된 데이터로 재생 중',Wd-12,Ht-12)}
+ ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='11px JetBrains Mono,monospace';ctx.textAlign='left';ctx.fillText('HD-MAP · 1 grid = 5 m',10,Ht-12);
+ $('hudA').textContent=s.vA.toFixed(1);$('hudB').textContent=s.vB.toFixed(1);$('hudGap').textContent=s.yB<LANE/2+W/2?Math.max(0,s.gap).toFixed(2)+'m':'다른 차로';$('hudBrake').textContent=s.brake.toFixed(0)+' bar'}
+
+/* ============ 타임라인 ============ */
+const EVENTS=[[LC_START,'B 진로변경 시작'],[T_SIGNAL,'B 방향지시등'],[T_CUT,'B 차로 진입'],[T_BRAKE,'A 제동'],[0,'충돌',true]];
+function pct(t){return (t-T0)/(T1-T0)*100}
+$('tlMarks').innerHTML=EVENTS.map(e=>`<div class="tl-mark ${e[2]?'impact':''}" style="left:${pct(e[0])}%"></div>`).join('');
+$('tlLabels').innerHTML=EVENTS.map((e,i)=>`<span class="${e[2]?'impact':''} ${i%2?'alt':''}" style="left:calc(${pct(e[0])}% * (1 - 154/100%))">${e[1]}</span>`).join('');
+function layoutLabels(){const tr=$('tlTrack').getBoundingClientRect(),lb=$('tlLabels').getBoundingClientRect();[...$('tlLabels').children].forEach((sp,i)=>{sp.style.left=(tr.left-lb.left+tr.width*pct(EVENTS[i][0])/100)+'px'})}
+let lastEvent=null;
+function setT(t,fromUser){curT=Math.max(T0,Math.min(T1,t));$('tl').value=curT;const p=pct(curT);$('tlFill').style.width=p+'%';$('tlKnob').style.left=p+'%';$('tlTime').textContent=(curT<0?'T':'T+')+curT.toFixed(2)+'s';
+ const ev=[...EVENTS].reverse().find(e=>curT>=e[0]&&curT<e[0]+0.6);if(ev&&ev!==lastEvent){const tt=$('evToast');tt.textContent=(ev[2]?'💥 ':'● ')+ev[1]+' · T'+(ev[0]<0?'':'+')+ev[0].toFixed(2)+'s';tt.classList.add('show');clearTimeout(tt._t);tt._t=setTimeout(()=>tt.classList.remove('show'),1300)}lastEvent=ev||lastEvent;
+ drawScene();drawCharts()}
+$('tl').addEventListener('input',e=>{playing=false;$('playBtn').textContent='▶';setT(+e.target.value,true)});
+function togglePlay(){if(curT>=T1)setT(T0);playing=!playing;$('playBtn').textContent=playing?'❚❚':'▶';lastTs=performance.now();if(playing)requestAnimationFrame(loop)}
+function loop(ts){if(!playing)return;const dt=(ts-lastTs)/1000;lastTs=ts;setT(curT+dt*speed);if(curT>=T1){playing=false;$('playBtn').textContent='↺';return}requestAnimationFrame(loop)}
+function setSpeed(v,el){speed=v;[...$('speedSel').children].forEach(b=>b.classList.toggle('on',b===el))}
+function idle(){if(!playing)drawScene();requestAnimationFrame(()=>setTimeout(idle,250))}
+
+/* ============ 차트 ============ */
+function lineChart(c,key,opts={}){const r=fitCanvas(c),w=r.width,h=r.height,x=c.getContext('2d');x.clearRect(0,0,w,h);
+ const vals=SIM.map(s=>key==='gap'?(s.yB<LANE/2+W/2?Math.max(0,s.gap):null):s[key]);const fin=vals.filter(v=>v!==null);
+ let mn=opts.min??Math.min(...fin),mx=opts.max??Math.max(...fin);if(mx-mn<1e-6)mx=mn+1;const px=t=>(t-T0)/(T1-T0)*w,py=v=>h-4-(v-mn)/(mx-mn)*(h-10);
+ if(opts.th!=null){x.strokeStyle='rgba(217,71,90,.6)';x.setLineDash([4,4]);x.beginPath();x.moveTo(0,py(opts.th));x.lineTo(w,py(opts.th));x.stroke();x.setLineDash([])}
+ x.strokeStyle='rgba(255,255,255,.14)';x.beginPath();x.moveTo(px(0),0);x.lineTo(px(0),h);x.stroke();
+ x.strokeStyle=opts.color||'#8f99ff';x.lineWidth=2;x.beginPath();let pen=false;SIM.forEach((s,i)=>{const v=vals[i];if(v===null){pen=false;return}const X=px(s.t),Yv=py(v);pen?x.lineTo(X,Yv):x.moveTo(X,Yv);pen=true});x.stroke();
+ const X=px(curT);x.strokeStyle='#fff';x.lineWidth=1.5;x.beginPath();x.moveTo(X,0);x.lineTo(X,h);x.stroke();
+ const cvv=vals[Math.round((curT-T0)/DT)];if(cvv!=null){x.fillStyle='#fff';x.beginPath();x.arc(X,py(cvv),3.5,0,7);x.fill()}}
+function drawCharts(){const s=at(curT);
+ if(step===0){lineChart($('gChart'),'g',{min:-3.3,max:0.3,th:-1.5,color:'#d9475a'});$('gNow').textContent=s.g.toFixed(2)+'g';
+  const trig=curT>=0;$('bufState').textContent=trig?'트리거! 8초 격리 완료':'감시 중';$('bufState').style.color=trig?'#d9475a':'';[...$('buffer').children].forEach((b,i)=>{b.className=trig&&i>=22?(i===28?'impact':'iso'):''})}
+ if(step===2){document.querySelectorAll('.tchart').forEach(c=>{const k=c.dataset.key;lineChart(c,k,{color:k==='brake'?'#ff4d5e':k==='yB'?'#ff9a5a':'#8f99ff',min:k==='gap'?0:undefined})});
+  $('cvA').textContent=s.vA.toFixed(1);$('cvBr').textContent=s.brake.toFixed(0);$('cvY').textContent=s.yB.toFixed(2);$('cvGap').textContent=s.yB<LANE/2+W/2?Math.max(0,s.gap).toFixed(2):'-'}}
+$('buffer').innerHTML='<i></i>'.repeat(30);
+
+/* ============ 블록체인 ============ */
+let BLOCKS=[];
+function blockPayload(i,tamperFlag){const t0=T0+i,t1=t0+1,ss=SIM.filter(s=>s.t>=t0&&s.t<t1+1e-9);
+ const r=v=>Math.round(v*100)/100;let maxBrake=Math.max(...ss.map(s=>s.brake));if(tamperFlag&&i===5)maxBrake=0;
+ return JSON.stringify({w:[t0,t1],vA:r(ss[ss.length-1].vA),vB:r(ss[ss.length-1].vB),brk:r(maxBrake),minG:r(Math.min(...ss.map(s=>s.g))),yB:r(ss[ss.length-1].yB),n:ss.length})}
+function seal(){BLOCKS=[];let prev='0'.repeat(64);for(let i=0;i<8;i++){const p=blockPayload(i,false),dh=sha256(p),sig=sha256('HSM-VEHICLE-A|'+dh).slice(0,16),h=sha256(prev+dh+sig);BLOCKS.push({i,prev,dh,sig,h});prev=h}sealed=true;tampered=false;renderChain(-1,true);$('sealChip').textContent='봉인 완료 ✓';$('sealChip').className='chip sealed';$('offHash').textContent='sha256 '+sha256('4K+LiDAR-raw').slice(0,10)+'… ✓ 일치'}
+function renderChain(badFrom,animate){$('chain').innerHTML=BLOCKS.map((b,i)=>`<div class="block ${badFrom>=0&&i>=badFrom?'bad':'sealed'} ${animate?'pending':''}" data-i="${i}"><div class="bt"><span>#${i+1}</span><span>T${T0+i<0?'':'+'}${T0+i}~${T0+i+1}s</span></div><div class="h">${(badFrom>=0&&i===badFrom?'⚠ ':'')}${b.h.slice(0,8)}…${b.h.slice(-4)}</div></div>`).join('');
+ if(animate){[...$('chain').children].forEach((el,i)=>setTimeout(()=>el.classList.remove('pending'),120*i+80))}
+ const v=$('verifyBox');if(badFrom>=0){v.className='verify bad';v.innerHTML=`⛔ <span>블록 #${badFrom+1}의 데이터 해시가 HSM 서명과 불일치 — 이후 ${8-badFrom}개 블록 사슬 단절. 이 데이터는 증거로 채택되지 않습니다.</span>`}else{v.className='verify ok';v.innerHTML=`✅ <span>8개 블록 서명·해시 체인 검증 완료 · 최종 해시 <span class="mono">${BLOCKS[7].h.slice(0,12)}…</span></span>`}}
+function verifyChain(){let prev='0'.repeat(64);for(let i=0;i<8;i++){const p=blockPayload(i,tampered),dh=sha256(p),b=BLOCKS[i];if(dh!==b.dh||sha256('HSM-VEHICLE-A|'+dh).slice(0,16)!==b.sig||b.prev!==prev)return i;prev=b.h}return -1}
+function tamper(){if(!sealed)seal();tampered=true;const bad=verifyChain();renderChain(bad,false);$('tamperBtn').textContent='A 제동 기록을 지워 봤습니다';}
+function restore(){tampered=false;renderChain(verifyChain(),false);$('tamperBtn').textContent='위·변조 시도해 보기'}
+
+/* ============ 과실 리포트 ============ */
+function renderFault(){$('dAvail').textContent=dAvail.toFixed(2);$('dNeed').textContent=dNeed.toFixed(2);const mxv=Math.ceil(dNeed*1.2);$('gaugeMax').textContent=mxv+' m';$('gaugeFill').style.width='0%';setTimeout(()=>$('gaugeFill').style.width=(dNeed/mxv*100)+'%',60);$('gaugeMark').style.left=(dAvail/mxv*100)+'%';$('gaugeLbl').style.left=(dAvail/mxv*100)+'%';
+ $('verdict').innerHTML=avoidable?'✅ 회피 가능했음':`⚠️ 물리적으로 회피 불가능 — 필요 거리가 확보 거리보다 ${(dNeed-dAvail).toFixed(1)}m 김`;
+ $('ratioNew').textContent=`A${FAULT.A} : B${FAULT.B}`;$('mods').innerHTML=FAULT.mods.map(m=>`<li><span>${m[0]}</span><b>${m[1]}</b></li>`).join('');
+ $('reportBody').innerHTML=`<p><b>VAR AI 사고 감정 리포트</b> · No. VAR-2026-1106-0001</p><p>사고 유형: 진로변경(끼어들기) 중 추돌 · 충돌 시 상대속도 ${(at(0).vA-at(0).vB>0?((vA0-DEC*(0-T_BRAKE))-vB0)*3.6:0).toFixed(1)} km/h</p><p>핵심 근거: B 차로 진입 시 확보 거리 ${dAvail.toFixed(2)}m, A 반응 ${reactReal.toFixed(1)}s 후 0.76g 제동</p><p>데이터 무결성: 8블록 해시 체인 검증 ✓ · 오프체인 원본 해시 일치 ✓</p><p><b>과실비율 A${FAULT.A} : B${FAULT.B}</b> · 발급 즉시 보험사 정산 연동</p>`}
+const keyState=[false,false,false];
+document.querySelectorAll('.key').forEach(k=>k.addEventListener('click',()=>{const i=+k.dataset.k;keyState[i]=!keyState[i];k.classList.toggle('on',keyState[i]);$('report').classList.toggle('locked',!keyState.every(Boolean))}));
+
+/* ============ 단계 전환 ============ */
+function goStep(n){step=n;document.querySelectorAll('.step').forEach((b,i)=>{b.classList.toggle('active',i===n);b.classList.toggle('done',i<n)});document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',+p.dataset.pane===n));
+ if(n>=1&&!sealed)seal();if(n===1)renderChain(tampered?verifyChain():-1,true);
+ if(n===0){setT(-0.5);}
+ if(n===2){setT(-2);}
+ if(n===3){setT(0.3);renderFault()}
+ drawCharts()}
+function startAuto(){clearTimeout(autoTimer);playing=false;tampered=false;sealed=false;$('sealChip').textContent='미봉인';$('sealChip').className='chip';keyState.fill(false);document.querySelectorAll('.key').forEach(k=>k.classList.remove('on'));$('report').classList.add('locked');$('autoBtn').textContent='자동 시연 중…';
+ const seq=[()=>{goStep(0);setT(-1.2);speed=.35;togglePlay()},()=>{playing=false;goStep(1)},()=>tamper(),()=>restore(),()=>{goStep(2);setT(-2.2);speed=.25;if(!playing)togglePlay()},()=>{playing=false;goStep(3)},()=>{document.querySelectorAll('.key').forEach((k,i)=>setTimeout(()=>k.click(),i*450))},()=>{$('autoBtn').textContent='자동 시연 ▶'}];
+ const gaps=[0,5200,2200,2600,1400,9000,1600,2400];let acc=0;seq.forEach((f,i)=>{acc+=gaps[i];autoTimer=setTimeout(f,acc)})}
+
+/* ============ 히어로 블랙박스 애니메이션 ============ */
+(function(){
+ const c=$('dashcam'),x=c.getContext('2d'),rb=$('replayBtn');rb.addEventListener('click',()=>{rb.classList.remove('show');t0=performance.now();requestAnimationFrame(frame)});const LOOP=11.5,IMPACT=6,HOOD=5.3;
+ const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ let W=0,H=0,visible=true,t0=performance.now();
+ const city=[];for(let i=0;i<46;i++){city.push({x:i/46,w:.015+Math.random()*.03,h:.04+Math.random()*.16,lit:Array.from({length:6},()=>Math.random()<.35)})}
+ function size(){const r=c.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;c.width=W*d;c.height=H*d;x.setTransform(d,0,0,d,0,0)}
+ const sm=v=>{v=Math.max(0,Math.min(1,v));return v*v*(3-2*v)};
+ function bState(ts){const z=27-3.6*ts;const lat=3.5*(1-sm((ts-4.4)/1.4));return {z,lat}}
+ function egoDist(ts){return ts<5.4?16.67*ts:16.67*5.4+16.67*(ts-5.4)-0.5*7.5*(ts-5.4)**2}
+ function frame(now){if(!visible){requestAnimationFrame(frame);return}
+  if(!W)size();
+  const END=LOOP-.9;let t=reduce?7.6:Math.min((now-t0)/1000,END);const done=!reduce&&t>=END;const ts=Math.min(t,IMPACT);const frozen=t>=IMPACT;
+  let shake=0;if(t>5.4&&t<IMPACT)shake=(t-5.4)*2;if(t>=IMPACT&&t<IMPACT+.35)shake=(1-(t-IMPACT)/.35)*9;
+  const hy=H*.44+(t>5.4&&t<IMPACT?(t-5.4)*14:0)+(shake?Math.sin(now*.09)*shake:0), cx=W/2+(shake?Math.cos(now*.07)*shake:0), f=W*.85, camH=1.25;
+  const P=(px,py,pz)=>[cx+f*px/pz, hy+f*(camH-py)/pz];
+  const sky=x.createLinearGradient(0,0,0,hy);sky.addColorStop(0,'#05081a');sky.addColorStop(1,'#1d2a5e');x.fillStyle=sky;x.fillRect(0,0,W,hy+2);
+  city.forEach(b=>{const bx=b.x*W,bw=b.w*W,bh=b.h*H;x.fillStyle='#0c1230';x.fillRect(bx,hy-bh,bw,bh);x.fillStyle='rgba(255,214,140,.55)';b.lit.forEach((l,i)=>{if(l)x.fillRect(bx+bw*.25,hy-bh+6+i*bh/7,bw*.18,2)})});
+  x.fillStyle='#0d1022';x.fillRect(0,hy,W,H-hy);
+  const zN=1.4,zF=260;const road=[P(-5.25,0,zN),P(5.25,0,zN),P(5.25,0,zF),P(-5.25,0,zF)];
+  x.fillStyle='#1b2033';x.beginPath();road.forEach((p,i)=>i?x.lineTo(...p):x.moveTo(...p));x.fill();
+  const s=egoDist(ts);
+  const quad=(x1,x2,z1,z2,col)=>{const a=P(x1,0,z1),b=P(x2,0,z1),cc=P(x2,0,z2),d=P(x1,0,z2);x.fillStyle=col;x.beginPath();x.moveTo(...a);x.lineTo(...b);x.lineTo(...cc);x.lineTo(...d);x.fill()};
+  quad(-5.25,-5.1,zN,zF,'rgba(255,255,255,.75)');quad(5.1,5.25,zN,zF,'rgba(255,255,255,.75)');
+  const ph=s%8;for(let k=0;k<26;k++){const z1=zN+k*8-ph;if(z1<zN||z1>zF)continue;[-1.75,1.75].forEach(lx=>quad(lx-.07,lx+.07,z1,z1+3.5,'rgba(255,255,255,.55)'))}
+  const lph=s%32;for(let k=0;k<9;k++){const z=4+k*32-lph;if(z<2)continue;[-7.2,7.2].forEach(lx=>{const b=P(lx,0,z),tp=P(lx,6,z),arm=P(lx*.86,6,z);x.strokeStyle='rgba(120,130,170,.5)';x.lineWidth=Math.max(1,f*.12/z);x.beginPath();x.moveTo(...b);x.lineTo(...tp);x.lineTo(...arm);x.stroke();const g=x.createRadialGradient(arm[0],arm[1],0,arm[0],arm[1],f*2.4/z);g.addColorStop(0,'rgba(255,220,160,.55)');g.addColorStop(1,'rgba(255,220,160,0)');x.fillStyle=g;x.beginPath();x.arc(arm[0],arm[1],f*2.4/z,0,7);x.fill()})}
+  function car(lx,z,opt={}){if(z<1.2)return null;const w=.9,body=[P(lx-w,.28,z),P(lx+w,.95,z)],cab=[P(lx-.7,.95,z),P(lx+.7,1.45,z)];
+   const sh=P(lx,0,z);x.fillStyle='rgba(0,0,0,.45)';x.beginPath();x.ellipse(sh[0],sh[1],f*1.05/z,f*.12/z,0,0,7);x.fill();
+   x.fillStyle=opt.col||'#30374f';x.fillRect(body[0][0],body[1][1],body[1][0]-body[0][0],body[0][1]-body[1][1]);
+   x.fillStyle='#232a40';x.beginPath();x.moveTo(cab[0][0]-f*.08/z,cab[0][1]);x.lineTo(cab[1][0]+f*.08/z,cab[0][1]);x.lineTo(cab[1][0]-f*.05/z,cab[1][1]);x.lineTo(cab[0][0]+f*.05/z,cab[1][1]);x.fill();
+   x.fillStyle='rgba(120,150,220,.18)';x.fillRect(cab[0][0]+f*.06/z,cab[1][1]+f*.08/z,(cab[1][0]-cab[0][0])-f*.12/z,(cab[0][1]-cab[1][1])-f*.14/z);
+   const tl=(sx)=>{const a=P(lx+sx*.88,.9,z),b=P(lx+sx*.55,.74,z);return [Math.min(a[0],b[0]),a[1],Math.abs(b[0]-a[0]),b[1]-a[1]]};
+   [-1,1].forEach(sx=>{const r=tl(sx);x.shadowColor='#ff2a3d';x.shadowBlur=opt.brake?f*.9/z:f*.35/z;x.fillStyle=opt.brake?'#ff4a5a':'#c81e2e';x.fillRect(...r);x.shadowBlur=0});
+   if(opt.signal&&Math.floor(now/260)%2===0){const r=tl(-1);x.shadowColor='#ffb020';x.shadowBlur=f*.8/z;x.fillStyle='#ffc040';x.fillRect(r[0]-r[2]*.35,r[1],r[2]*.3,r[3]);x.shadowBlur=0}
+   const pl=P(lx-.26,.6,z),pr=P(lx+.26,.45,z);x.fillStyle='#e9ecf5';x.fillRect(pl[0],pl[1],pr[0]-pl[0],pr[1]-pl[1]);
+   x.fillStyle='#0a0c16';[-1,1].forEach(sx=>{const a=P(lx+sx*.9,.3,z),b=P(lx+sx*.62,0,z);x.fillRect(Math.min(a[0],b[0]),a[1],Math.abs(b[0]-a[0]),b[1]-a[1])});
+   const tlp=P(lx-w-.1,1.55,z),brp=P(lx+w+.1,0,z);return [tlp[0],tlp[1],brp[0]-tlp[0],brp[1]-tlp[1]]}
+  car(-3.5,46+Math.sin(ts*.4)*2,{col:'#3a4060'});
+  const B=bState(ts);const inLane=B.lat<2.6;
+  const box=car(B.lat,B.z,{col:'#4a3a33',signal:ts>4.6&&ts<5.9});
+  if(box&&!frozen||box&&frozen&&t<IMPACT+3.2){const dist=Math.max(0,B.z-HOOD),col=inLane?'#ff4d5e':'#5ee0b0';
+   x.strokeStyle=col;x.lineWidth=2;const [bx,by,bw,bh]=box;const L=Math.min(18,bw*.25);x.beginPath();
+   [[bx,by,1,1],[bx+bw,by,-1,1],[bx,by+bh,1,-1],[bx+bw,by+bh,-1,-1]].forEach(([px,py,dx,dy])=>{x.moveTo(px+dx*L,py);x.lineTo(px,py);x.lineTo(px,py+dy*L)});x.stroke();
+   x.font='600 12px JetBrains Mono,monospace';const lab=`VEHICLE ${inLane?'CUT-IN':'0.98'} · ${dist.toFixed(1)}m${inLane&&dist>0?' · TTC '+(dist/3.6).toFixed(1)+'s':''}`;const tw=x.measureText(lab).width+12;
+   const ly=Math.max(28,by-22);x.fillStyle=col;x.fillRect(bx,ly,tw,18);x.fillStyle='#05081a';x.fillText(lab,bx+6,ly+13)}
+  const hood=x.createLinearGradient(0,H*.86,0,H);hood.addColorStop(0,'rgba(5,6,12,0)');hood.addColorStop(1,'rgba(5,6,12,.95)');x.fillStyle=hood;x.fillRect(0,H*.82,W,H*.18);
+  x.fillStyle='#06070d';x.beginPath();x.moveTo(0,H);x.quadraticCurveTo(W/2,H*.9,W,H);x.fill();
+  x.fillStyle='rgba(0,0,0,.08)';for(let y=0;y<H;y+=3)x.fillRect(0,y,W,1);
+  const vg=x.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,W*.75);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');x.fillStyle=vg;x.fillRect(0,0,W,H);
+  if(t>=IMPACT&&t<IMPACT+.45){x.fillStyle=`rgba(255,255,255,${.85*(1-(t-IMPACT)/.45)})`;x.fillRect(0,0,W,H)}
+  if(frozen&&t>IMPACT+.5){x.fillStyle='rgba(5,8,26,.38)';x.fillRect(0,0,W,H);const sy=((t-IMPACT-.5)/1.1)*H;if(sy<H){const g=x.createLinearGradient(0,sy-40,0,sy);g.addColorStop(0,'rgba(69,83,255,0)');g.addColorStop(1,'rgba(143,153,255,.55)');x.fillStyle=g;x.fillRect(0,sy-40,W,40);x.fillStyle='#8f99ff';x.fillRect(0,sy,W,2)}}
+  const vel=ts<5.4?60:Math.max(0,60-(ts-5.4)*7.5*3.6);const g=frozen?3.1:(ts>5.4?.76:0);
+  x.font='700 13px JetBrains Mono,monospace';x.textBaseline='alphabetic';
+  if(Math.floor(now/500)%2===0||frozen){x.fillStyle='#ff3b4d';x.beginPath();x.arc(22,26,5,0,7);x.fill()}
+  x.fillStyle='#fff';x.fillText(frozen?'EVENT':'REC',33,31);x.fillStyle='rgba(255,255,255,.6)';x.font='12px JetBrains Mono,monospace';x.fillText('CH1 · FRONT 4K',80,31);
+  const sec=12+Math.floor(ts);x.textAlign='right';x.fillStyle='rgba(255,255,255,.85)';x.fillText(`2026-11-06 08:42:${String(sec).padStart(2,'0')}.${String(Math.floor((ts%1)*100)).padStart(2,'0')}`,W-18,31);x.textAlign='left';
+  x.font='700 26px JetBrains Mono,monospace';x.fillStyle='#fff';x.fillText(vel.toFixed(0),20,H-26);x.font='12px JetBrains Mono,monospace';x.fillStyle='rgba(255,255,255,.65)';x.fillText('km/h',22+x.measureText(vel.toFixed(0)).width*2.2,H-26);
+  x.textAlign='right';x.font='700 13px JetBrains Mono,monospace';x.fillStyle=g>1.5?'#ff4d5e':g>0?'#ffb36b':'rgba(255,255,255,.75)';x.fillText(`G-SENSOR ${g.toFixed(2)}g`,W-18,H-26);x.textAlign='left';
+  x.strokeStyle='rgba(255,255,255,.4)';x.lineWidth=1.5;const m=12,cl=22;[[m,m+38,1,1],[W-m,m+38,-1,1],[m,H-m-44,1,-1],[W-m,H-m-44,-1,-1]].forEach(([px,py,dx,dy])=>{x.beginPath();x.moveTo(px+dx*cl,py);x.lineTo(px,py);x.lineTo(px,py+dy*cl);x.stroke()});
+  if(frozen&&t>IMPACT+.2){const pill=(txt,y,bg,fg)=>{x.font='700 14px Pretendard,sans-serif';const tw=x.measureText(txt).width+28;x.fillStyle=bg;x.beginPath();x.roundRect?x.roundRect(W/2-tw/2,y,tw,30,15):x.rect(W/2-tw/2,y,tw,30);x.fill();x.fillStyle=fg;x.textAlign='center';x.fillText(txt,W/2,y+20);x.textAlign='left'};
+   pill('⚠ 충격 감지 3.1g · 엣지 AI 트리거',54,'#ff3b4d','#fff');
+   if(t>IMPACT+1.7){const n=Math.min(8,Math.floor((t-IMPACT-1.7)/.18)+1),bw=Math.min(36,(W-120)/8),gx=W/2-(bw*8+7*6)/2,gy=H*.62;
+    for(let i=0;i<8;i++){x.fillStyle=i<n?(i===6?'#ff4d5e':'#4553ff'):'rgba(255,255,255,.15)';x.fillRect(gx+i*(bw+6),gy,bw,10)}
+    x.font='11px JetBrains Mono,monospace';x.fillStyle='rgba(255,255,255,.7)';x.textAlign='left';x.fillText('T-6s',gx,gy+26);x.textAlign='right';x.fillText('T+2s',gx+bw*8+42,gy+26);x.textAlign='left';
+    if(n>=8&&t>IMPACT+3.4)pill('🔒 8초 데이터 봉인 완료 · 블록체인 전송',gy+40,'#5ee0b0','#05081a');
+    else pill('8초 구간 격리 · 암호화 중…',gy+40,'rgba(255,255,255,.92)','#101010')}}
+  if(t>LOOP-.8){x.fillStyle=`rgba(0,0,0,${(t-(LOOP-.8))/.8})`;x.fillRect(0,0,W,H)}
+  if(done){rb.classList.add('show');return}if(!reduce)requestAnimationFrame(frame)}
+ window.addEventListener('resize',size);
+ if('IntersectionObserver' in window)new IntersectionObserver(e=>{visible=e[0].isIntersecting},{threshold:0}).observe(c);
+ requestAnimationFrame(frame)})();
+
+/* ============ 헤더 ============ */
+function hdr(){$('topbar').classList.toggle('solid',(window.__pg&&window.__pg!=='top')||window.scrollY>window.innerHeight*0.85)}
+window.addEventListener('scroll',hdr,{passive:true});
+window.addEventListener('resize',()=>{layoutLabels();drawScene();drawCharts()});
+
+setT(-0.5);layoutLabels();hdr();idle();
+document.fonts&&document.fonts.ready.then(()=>{layoutLabels();drawScene()});
+</script>
+<script>
+(function(){
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+ document.querySelectorAll('.section-head,.prob,.flow-card,.opt,.trust-item,.node-map,.eff>div,.cta,.steps,.console').forEach((el,i)=>{el.classList.add('rv');el.style.transitionDelay=((i%3)*90)+'ms';io.observe(el)});
+ document.querySelectorAll('.prob,.opt,.trust-item,.flow-card,.eff>div,.step').forEach(el=>{el.classList.add('spot');el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();el.style.setProperty('--mx',(e.clientX-r.left)+'px');el.style.setProperty('--my',(e.clientY-r.top)+'px')})});
+ document.querySelectorAll('.hero-kpis b').forEach(b=>{const m=b.textContent.match(/^(\D*)(\d+)(.*)$/);if(!m)return;const n=+m[2],t0=performance.now();const f=now=>{const p=Math.min(1,(now-t0)/1400),e=1-Math.pow(1-p,3);b.textContent=m[1]+Math.round(n*e)+m[3];if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)});
+})();
+</script>
+<script>
+(function(){
+ const PAGES=[['top','홈'],['problem','문제'],['demo','사고 복원 시연'],['process','처리 프로세스'],['coverage','전 차종 확장'],['trust','신뢰 구조'],['impact','기대효과']];
+ const els=id=>id==='top'?[document.querySelector('.hero'),document.querySelector('.ticker')]:[document.getElementById(id)];
+ let cur=null,busy=false;
+ function show(id){PAGES.forEach(([p])=>els(p).forEach(e=>e&&e.classList.toggle('pg-hide',p!==id)));cur=id;window.__pg=id;
+  window.scrollTo({top:0,behavior:'instant'});
+  document.querySelectorAll('.navlinks a').forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+id));
+  const i=PAGES.findIndex(p=>p[0]===id);$('pgNum').textContent=String(i+1).padStart(2,'0')+' / '+String(PAGES.length).padStart(2,'0');$('pgName').textContent=PAGES[i][1];
+  history.replaceState(null,'','#'+id);hdr();
+  els(id).forEach(e=>e&&e.querySelectorAll('.rv').forEach(r=>{r.classList.remove('in');void r.offsetWidth;r.classList.add('in')}));
+  if(id==='demo'){layoutLabels();drawScene();drawCharts()}}
+ function go(id){if(!PAGES.some(p=>p[0]===id)||busy)return;if(id===cur){return}
+  busy=true;const i=PAGES.findIndex(p=>p[0]===id);$('wipeTitle').innerHTML='<b>'+String(i+1).padStart(2,'0')+'</b>'+PAGES[i][1];
+  const w=$('wipe'),w2=$('wipe2');[w,w2].forEach(x=>{x.classList.remove('go');void x.offsetWidth;x.classList.add('go')});
+  setTimeout(()=>show(id),560);setTimeout(()=>{busy=false;[w,w2].forEach(x=>x.classList.remove('go'))},1400)}
+ window.goPage=go;
+ document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(PAGES.some(p=>p[0]===id)){e.preventDefault();go(id)}});
+ const step=d=>{const i=PAGES.findIndex(p=>p[0]===cur);go(PAGES[(i+d+PAGES.length)%PAGES.length][0])};
+ $('pgPrev').onclick=()=>step(-1);$('pgNext').onclick=()=>step(1);
+ document.addEventListener('keydown',e=>{if(e.target.closest('input,textarea'))return;if(e.key==='ArrowRight')step(1);if(e.key==='ArrowLeft')step(-1)});
+ const init=location.hash.slice(1);show(PAGES.some(p=>p[0]===init)?init:'top');
+})();
+</script>
+</body>
+</html>
